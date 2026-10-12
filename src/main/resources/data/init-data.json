@@ -1,0 +1,72 @@
+{
+  "trainees": [
+    {
+      "userId": 1,
+      "firstName": "John",
+      "lastName": "Smith",
+      "username": "John.Smith",
+      "password": "johnPass123",
+      "active": true,
+      "dateOfBirth": "1998-04-15",
+      "address": "Tashkent, Uzbekistan"
+    },
+    {
+      "userId": 2,
+      "firstName": "Alice",
+      "lastName": "Johnson",
+      "username": "Alice.Johnson",
+      "password": "alicePass12",
+      "active": true,
+      "dateOfBirth": "2000-11-20",
+      "address": "Tashkent, Uzbekistan"
+    }
+  ],
+  "trainers": [
+    {
+      "userId": 1,
+      "firstName": "Michael",
+      "lastName": "Brown",
+      "username": "Michael.Brown",
+      "password": "michaelP12",
+      "active": true,
+      "specialization": {
+        "trainingTypeName": "Strength"
+      }
+    },
+    {
+      "userId": 2,
+      "firstName": "Sarah",
+      "lastName": "Davis",
+      "username": "Sarah.Davis",
+      "password": "sarahPass12",
+      "active": true,
+      "specialization": {
+        "trainingTypeName": "Cardio"
+      }
+    }
+  ],
+  "trainings": [
+    {
+      "id": 1,
+      "traineeId": 1,
+      "trainerId": 1,
+      "trainingName": "Upper Body Strength",
+      "trainingType": {
+        "trainingTypeName": "Strength"
+      },
+      "trainingDate": "2026-10-01",
+      "trainingDuration": 60
+    },
+    {
+      "id": 2,
+      "traineeId": 2,
+      "trainerId": 2,
+      "trainingName": "Morning Cardio",
+      "trainingType": {
+        "trainingTypeName": "Cardio"
+      },
+      "trainingDate": "2026-10-03",
+      "trainingDuration": 45
+    }
+  ]
+}

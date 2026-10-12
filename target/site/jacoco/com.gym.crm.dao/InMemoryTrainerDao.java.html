@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InMemoryTrainerDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Gym CRM</a> &gt; <a href="index.source.html" class="el_package">com.gym.crm.dao</a> &gt; <span class="el_source">InMemoryTrainerDao.java</span></div><h1>InMemoryTrainerDao.java</h1><pre class="source lang-java linenums">package com.gym.crm.dao;
+
+import com.gym.crm.model.Trainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Repository
+<span class="fc" id="L17">public class InMemoryTrainerDao implements TrainerDao {</span>
+
+<span class="fc" id="L19">    private static final Logger LOGGER =</span>
+<span class="fc" id="L20">            LoggerFactory.getLogger(InMemoryTrainerDao.class);</span>
+
+    private Map&lt;Long, Trainer&gt; trainerStorage;
+<span class="fc" id="L23">    private final AtomicLong idSequence = new AtomicLong(0);</span>
+
+    @Autowired
+    public void setTrainerStorage(
+            @Qualifier(&quot;trainerStorage&quot;) Map&lt;Long, Trainer&gt; trainerStorage
+    ) {
+<span class="fc" id="L29">        this.trainerStorage = trainerStorage;</span>
+
+<span class="fc" id="L31">        long highestExistingId = trainerStorage.keySet()</span>
+<span class="fc" id="L32">                .stream()</span>
+<span class="fc" id="L33">                .mapToLong(Long::longValue)</span>
+<span class="fc" id="L34">                .max()</span>
+<span class="fc" id="L35">                .orElse(0L);</span>
+
+<span class="fc" id="L37">        idSequence.set(highestExistingId);</span>
+
+<span class="fc" id="L39">        LOGGER.debug(</span>
+                &quot;Trainer storage injected. Next generated trainer ID will be {}.&quot;,
+<span class="fc" id="L41">                highestExistingId + 1</span>
+        );
+<span class="fc" id="L43">    }</span>
+
+    @Override
+    public Trainer save(Trainer trainer) {
+<span class="fc" id="L47">        Long id = trainer.getUserId();</span>
+
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (id == null) {</span>
+<span class="fc" id="L50">            id = idSequence.incrementAndGet();</span>
+<span class="fc" id="L51">            trainer.setUserId(id);</span>
+        } else {
+<span class="nc" id="L53">            long providedId = id;</span>
+<span class="nc" id="L54">            idSequence.updateAndGet(current -&gt; Math.max(current, providedId));</span>
+        }
+
+<span class="fc" id="L57">        trainerStorage.put(id, trainer);</span>
+
+<span class="fc" id="L59">        LOGGER.debug(&quot;Saved trainer with id={}.&quot;, id);</span>
+
+<span class="fc" id="L61">        return trainer;</span>
+    }
+
+    @Override
+    public Trainer update(Trainer trainer) {
+<span class="fc" id="L66">        Long id = trainer.getUserId();</span>
+
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">        if (id == null || !trainerStorage.containsKey(id)) {</span>
+<span class="fc" id="L69">            throw new IllegalArgumentException(</span>
+                    &quot;Cannot update trainer. Trainer with id=&quot; + id + &quot; does not exist.&quot;
+            );
+        }
+
+<span class="fc" id="L74">        trainerStorage.put(id, trainer);</span>
+
+<span class="fc" id="L76">        LOGGER.debug(&quot;Updated trainer with id={}.&quot;, id);</span>
+
+<span class="fc" id="L78">        return trainer;</span>
+    }
+
+    @Override
+    public Optional&lt;Trainer&gt; findById(Long id) {
+<span class="nc" id="L83">        LOGGER.debug(&quot;Finding trainer by id={}.&quot;, id);</span>
+
+<span class="nc" id="L85">        return Optional.ofNullable(trainerStorage.get(id));</span>
+    }
+
+    @Override
+    public List&lt;Trainer&gt; findAll() {
+<span class="nc" id="L90">        LOGGER.debug(&quot;Finding all trainers. Count={}.&quot;, trainerStorage.size());</span>
+
+<span class="nc" id="L92">        return trainerStorage.values()</span>
+<span class="nc" id="L93">                .stream()</span>
+<span class="nc" id="L94">                .sorted(Comparator.comparing(Trainer::getUserId))</span>
+<span class="nc" id="L95">                .toList();</span>
+    }
+
+    @Override
+    public Optional&lt;Trainer&gt; findByUsername(String username) {
+<span class="fc" id="L100">        LOGGER.debug(&quot;Finding trainer by username='{}'.&quot;, username);</span>
+
+<span class="fc" id="L102">        return trainerStorage.values()</span>
+<span class="fc" id="L103">                .stream()</span>
+<span class="fc" id="L104">                .filter(trainer -&gt; username.equals(trainer.getUsername()))</span>
+<span class="fc" id="L105">                .findFirst();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

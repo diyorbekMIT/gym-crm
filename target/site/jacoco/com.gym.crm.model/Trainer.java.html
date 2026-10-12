@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Trainer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Gym CRM</a> &gt; <a href="index.source.html" class="el_package">com.gym.crm.model</a> &gt; <span class="el_source">Trainer.java</span></div><h1>Trainer.java</h1><pre class="source lang-java linenums">package com.gym.crm.model;
+
+import java.util.Objects;
+
+public class Trainer extends User {
+
+    private Long userId;
+    private TrainingType specialization;
+
+<span class="fc" id="L10">    public Trainer() {</span>
+<span class="fc" id="L11">    }</span>
+
+    public Trainer(
+            Long userId,
+            String firstName,
+            String lastName,
+            String username,
+            String password,
+            boolean active,
+            TrainingType specialization
+    ) {
+<span class="nc" id="L22">        super(firstName, lastName, username, password, active);</span>
+<span class="nc" id="L23">        this.userId = userId;</span>
+<span class="nc" id="L24">        this.specialization = specialization;</span>
+<span class="nc" id="L25">    }</span>
+
+    public Long getUserId() {
+<span class="fc" id="L28">        return userId;</span>
+    }
+
+    public void setUserId(Long userId) {
+<span class="fc" id="L32">        this.userId = userId;</span>
+<span class="fc" id="L33">    }</span>
+
+    public TrainingType getSpecialization() {
+<span class="fc" id="L36">        return specialization;</span>
+    }
+
+    public void setSpecialization(TrainingType specialization) {
+<span class="fc" id="L40">        this.specialization = specialization;</span>
+<span class="fc" id="L41">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if (this == o) {</span>
+<span class="nc" id="L46">            return true;</span>
+        }
+
+<span class="nc bnc" id="L49" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L50">            return false;</span>
+        }
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (!super.equals(o)) {</span>
+<span class="nc" id="L54">            return false;</span>
+        }
+
+<span class="nc" id="L57">        Trainer trainer = (Trainer) o;</span>
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        return Objects.equals(userId, trainer.userId)</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                &amp;&amp; Objects.equals(specialization, trainer.specialization);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L65">        return Objects.hash(super.hashCode(), userId, specialization);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L70">        return &quot;Trainer{&quot;</span>
+                + &quot;userId=&quot; + userId
+<span class="nc" id="L72">                + &quot;, firstName='&quot; + getFirstName() + '\''</span>
+<span class="nc" id="L73">                + &quot;, lastName='&quot; + getLastName() + '\''</span>
+<span class="nc" id="L74">                + &quot;, username='&quot; + getUsername() + '\''</span>
+<span class="nc" id="L75">                + &quot;, active=&quot; + isActive()</span>
+                + &quot;, specialization=&quot; + specialization
+                + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

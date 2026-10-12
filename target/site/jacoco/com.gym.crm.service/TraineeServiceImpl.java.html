@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TraineeServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Gym CRM</a> &gt; <a href="index.source.html" class="el_package">com.gym.crm.service</a> &gt; <span class="el_source">TraineeServiceImpl.java</span></div><h1>TraineeServiceImpl.java</h1><pre class="source lang-java linenums">package com.gym.crm.service;
+
+import com.gym.crm.dao.TraineeDao;
+import com.gym.crm.model.Trainee;
+import com.gym.crm.service.exception.EntityNotFoundException;
+import com.gym.crm.util.PasswordGenerator;
+import com.gym.crm.util.UsernameGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L16">public class TraineeServiceImpl implements TraineeService {</span>
+
+<span class="fc" id="L18">    private static final Logger LOGGER =</span>
+<span class="fc" id="L19">            LoggerFactory.getLogger(TraineeServiceImpl.class);</span>
+
+    private TraineeDao traineeDao;
+    private UsernameGenerator usernameGenerator;
+    private PasswordGenerator passwordGenerator;
+
+    @Autowired
+    public void setTraineeDao(TraineeDao traineeDao) {
+<span class="fc" id="L27">        this.traineeDao = traineeDao;</span>
+<span class="fc" id="L28">    }</span>
+
+    @Autowired
+    public void setUsernameGenerator(UsernameGenerator usernameGenerator) {
+<span class="fc" id="L32">        this.usernameGenerator = usernameGenerator;</span>
+<span class="fc" id="L33">    }</span>
+
+    @Autowired
+    public void setPasswordGenerator(PasswordGenerator passwordGenerator) {
+<span class="fc" id="L37">        this.passwordGenerator = passwordGenerator;</span>
+<span class="fc" id="L38">    }</span>
+
+    @Override
+    public Trainee create(Trainee trainee) {
+<span class="fc" id="L42">        validateTraineeForCreation(trainee);</span>
+
+<span class="fc" id="L44">        trainee.setUsername(</span>
+<span class="fc" id="L45">                usernameGenerator.generateUsername(</span>
+<span class="fc" id="L46">                        trainee.getFirstName(),</span>
+<span class="fc" id="L47">                        trainee.getLastName()</span>
+                )
+        );
+
+<span class="fc" id="L51">        trainee.setPassword(passwordGenerator.generatePassword());</span>
+<span class="fc" id="L52">        trainee.setActive(true);</span>
+
+<span class="fc" id="L54">        Trainee savedTrainee = traineeDao.save(trainee);</span>
+
+<span class="fc" id="L56">        LOGGER.info(</span>
+                &quot;Created trainee: id={}, username='{}'.&quot;,
+<span class="fc" id="L58">                savedTrainee.getUserId(),</span>
+<span class="fc" id="L59">                savedTrainee.getUsername()</span>
+        );
+
+<span class="fc" id="L62">        return savedTrainee;</span>
+    }
+
+    @Override
+    public Trainee update(Trainee trainee) {
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (trainee == null || trainee.getUserId() == null) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(</span>
+                    &quot;Trainee and trainee ID must not be null for update.&quot;
+            );
+        }
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (traineeDao.findById(trainee.getUserId()).isEmpty()) {</span>
+<span class="nc" id="L74">            LOGGER.warn(&quot;Cannot update trainee. id={} was not found.&quot;, trainee.getUserId());</span>
+
+<span class="nc" id="L76">            throw new EntityNotFoundException(</span>
+<span class="nc" id="L77">                    &quot;Trainee with id=&quot; + trainee.getUserId() + &quot; was not found.&quot;</span>
+            );
+        }
+
+<span class="nc" id="L81">        Trainee updatedTrainee = traineeDao.update(trainee);</span>
+
+<span class="nc" id="L83">        LOGGER.info(</span>
+                &quot;Updated trainee: id={}, username='{}'.&quot;,
+<span class="nc" id="L85">                updatedTrainee.getUserId(),</span>
+<span class="nc" id="L86">                updatedTrainee.getUsername()</span>
+        );
+
+<span class="nc" id="L89">        return updatedTrainee;</span>
+    }
+
+    @Override
+    public void deleteById(Long id) {
+<span class="nc" id="L94">        validateId(id, &quot;Trainee&quot;);</span>
+
+<span class="nc" id="L96">        boolean deleted = traineeDao.deleteById(id);</span>
+
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (!deleted) {</span>
+<span class="nc" id="L99">            LOGGER.warn(&quot;Cannot delete trainee. id={} was not found.&quot;, id);</span>
+
+<span class="nc" id="L101">            throw new EntityNotFoundException(</span>
+                    &quot;Trainee with id=&quot; + id + &quot; was not found.&quot;
+            );
+        }
+
+<span class="nc" id="L106">        LOGGER.info(&quot;Deleted trainee with id={}.&quot;, id);</span>
+<span class="nc" id="L107">    }</span>
+
+    @Override
+    public Trainee findById(Long id) {
+<span class="nc" id="L111">        validateId(id, &quot;Trainee&quot;);</span>
+
+<span class="nc" id="L113">        return traineeDao.findById(id)</span>
+<span class="nc" id="L114">                .orElseThrow(() -&gt; {</span>
+<span class="nc" id="L115">                    LOGGER.warn(&quot;Trainee with id={} was not found.&quot;, id);</span>
+
+<span class="nc" id="L117">                    return new EntityNotFoundException(</span>
+                            &quot;Trainee with id=&quot; + id + &quot; was not found.&quot;
+                    );
+                });
+    }
+
+    @Override
+    public List&lt;Trainee&gt; findAll() {
+<span class="nc" id="L125">        List&lt;Trainee&gt; trainees = traineeDao.findAll();</span>
+
+<span class="nc" id="L127">        LOGGER.info(&quot;Selected {} trainee(s).&quot;, trainees.size());</span>
+
+<span class="nc" id="L129">        return trainees;</span>
+    }
+
+    private void validateTraineeForCreation(Trainee trainee) {
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (trainee == null) {</span>
+<span class="nc" id="L134">            throw new IllegalArgumentException(&quot;Trainee must not be null.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L137" title="2 of 4 branches missed.">        if (trainee.getFirstName() == null || trainee.getFirstName().isBlank()) {</span>
+<span class="nc" id="L138">            throw new IllegalArgumentException(&quot;Trainee first name must not be blank.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L141" title="2 of 4 branches missed.">        if (trainee.getLastName() == null || trainee.getLastName().isBlank()) {</span>
+<span class="nc" id="L142">            throw new IllegalArgumentException(&quot;Trainee last name must not be blank.&quot;);</span>
+        }
+<span class="fc" id="L144">    }</span>
+
+    private void validateId(Long id, String entityName) {
+<span class="nc bnc" id="L147" title="All 4 branches missed.">        if (id == null || id &lt;= 0) {</span>
+<span class="nc" id="L148">            throw new IllegalArgumentException(</span>
+                    entityName + &quot; ID must be a positive number.&quot;
+            );
+        }
+<span class="nc" id="L152">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

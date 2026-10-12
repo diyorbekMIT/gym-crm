@@ -1,0 +1,12 @@
+com/gym/crm/util/UsernameGeneratorTest.class
+com/gym/crm/config/StorageConfigTest.class
+com/gym/crm/storage/StorageInitializerIntegrationTest.class
+com/gym/crm/service/TrainingServiceImplTest.class
+com/gym/crm/service/TraineeServiceImplTest.class
+com/gym/crm/service/TrainerServiceImplTest.class
+com/gym/crm/config/PropertyLoadingTest.class
+com/gym/crm/dao/InMemoryTrainerDaoTest.class
+com/gym/crm/facade/GymFacadeTest.class
+com/gym/crm/util/PasswordGeneratorTest.class
+com/gym/crm/dao/InMemoryTrainingDaoTest.class
+com/gym/crm/dao/InMemoryTraineeDaoTest.class

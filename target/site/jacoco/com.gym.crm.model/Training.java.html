@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Training.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Gym CRM</a> &gt; <a href="index.source.html" class="el_package">com.gym.crm.model</a> &gt; <span class="el_source">Training.java</span></div><h1>Training.java</h1><pre class="source lang-java linenums">package com.gym.crm.model;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+public class Training {
+
+    private Long id;
+    private Long traineeId;
+    private Long trainerId;
+    private String trainingName;
+    private TrainingType trainingType;
+    private LocalDate trainingDate;
+    private Integer trainingDuration;
+
+<span class="fc" id="L16">    public Training() {</span>
+<span class="fc" id="L17">    }</span>
+
+    public Training(
+            Long id,
+            Long traineeId,
+            Long trainerId,
+            String trainingName,
+            TrainingType trainingType,
+            LocalDate trainingDate,
+            Integer trainingDuration
+<span class="nc" id="L27">    ) {</span>
+<span class="nc" id="L28">        this.id = id;</span>
+<span class="nc" id="L29">        this.traineeId = traineeId;</span>
+<span class="nc" id="L30">        this.trainerId = trainerId;</span>
+<span class="nc" id="L31">        this.trainingName = trainingName;</span>
+<span class="nc" id="L32">        this.trainingType = trainingType;</span>
+<span class="nc" id="L33">        this.trainingDate = trainingDate;</span>
+<span class="nc" id="L34">        this.trainingDuration = trainingDuration;</span>
+<span class="nc" id="L35">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L38">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L42">        this.id = id;</span>
+<span class="fc" id="L43">    }</span>
+
+    public Long getTraineeId() {
+<span class="fc" id="L46">        return traineeId;</span>
+    }
+
+    public void setTraineeId(Long traineeId) {
+<span class="fc" id="L50">        this.traineeId = traineeId;</span>
+<span class="fc" id="L51">    }</span>
+
+    public Long getTrainerId() {
+<span class="fc" id="L54">        return trainerId;</span>
+    }
+
+    public void setTrainerId(Long trainerId) {
+<span class="fc" id="L58">        this.trainerId = trainerId;</span>
+<span class="fc" id="L59">    }</span>
+
+    public String getTrainingName() {
+<span class="fc" id="L62">        return trainingName;</span>
+    }
+
+    public void setTrainingName(String trainingName) {
+<span class="fc" id="L66">        this.trainingName = trainingName;</span>
+<span class="fc" id="L67">    }</span>
+
+    public TrainingType getTrainingType() {
+<span class="fc" id="L70">        return trainingType;</span>
+    }
+
+    public void setTrainingType(TrainingType trainingType) {
+<span class="fc" id="L74">        this.trainingType = trainingType;</span>
+<span class="fc" id="L75">    }</span>
+
+    public LocalDate getTrainingDate() {
+<span class="fc" id="L78">        return trainingDate;</span>
+    }
+
+    public void setTrainingDate(LocalDate trainingDate) {
+<span class="fc" id="L82">        this.trainingDate = trainingDate;</span>
+<span class="fc" id="L83">    }</span>
+
+    public Integer getTrainingDuration() {
+<span class="fc" id="L86">        return trainingDuration;</span>
+    }
+
+    public void setTrainingDuration(Integer trainingDuration) {
+<span class="fc" id="L90">        this.trainingDuration = trainingDuration;</span>
+<span class="fc" id="L91">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (this == o) {</span>
+<span class="nc" id="L96">            return true;</span>
+        }
+
+<span class="nc bnc" id="L99" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L100">            return false;</span>
+        }
+
+<span class="nc" id="L103">        Training training = (Training) o;</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        return Objects.equals(id, training.id)</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                &amp;&amp; Objects.equals(traineeId, training.traineeId)</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                &amp;&amp; Objects.equals(trainerId, training.trainerId)</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">                &amp;&amp; Objects.equals(trainingName, training.trainingName)</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">                &amp;&amp; Objects.equals(trainingType, training.trainingType)</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                &amp;&amp; Objects.equals(trainingDate, training.trainingDate)</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                &amp;&amp; Objects.equals(trainingDuration, training.trainingDuration);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L116">        return Objects.hash(</span>
+                id,
+                traineeId,
+                trainerId,
+                trainingName,
+                trainingType,
+                trainingDate,
+                trainingDuration
+        );
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L129">        return &quot;Training{&quot;</span>
+                + &quot;id=&quot; + id
+                + &quot;, traineeId=&quot; + traineeId
+                + &quot;, trainerId=&quot; + trainerId
+                + &quot;, trainingName='&quot; + trainingName + '\''
+                + &quot;, trainingType=&quot; + trainingType
+                + &quot;, trainingDate=&quot; + trainingDate
+                + &quot;, trainingDuration=&quot; + trainingDuration
+                + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

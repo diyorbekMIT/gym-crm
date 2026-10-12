@@ -1,0 +1,25 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Gym CRM,com.gym.crm.config,AppConfig,0,3,0,0,0,1,0,1,0,1
+Gym CRM,com.gym.crm.config,StorageConfig,0,19,0,0,0,5,0,5,0,5
+Gym CRM,com.gym.crm.service,TraineeServiceImpl,133,70,17,5,32,25,17,7,6,7
+Gym CRM,com.gym.crm.service,TrainerServiceImpl,110,73,16,6,26,26,16,7,5,7
+Gym CRM,com.gym.crm.service,TrainingServiceImpl,82,128,15,15,18,35,17,9,4,7
+Gym CRM,com.gym.crm.service.exception,TraineeService,3,0,0,0,1,0,1,0,1,0
+Gym CRM,com.gym.crm.service.exception,InvalidTrainingException,4,0,0,0,2,0,1,0,1,0
+Gym CRM,com.gym.crm.service.exception,EntityNotFoundException,0,4,0,0,0,2,0,1,0,1
+Gym CRM,com.gym.crm.facade,GymFacade,37,32,0,0,8,10,8,5,8,5
+Gym CRM,com.gym.crm.dao,InMemoryTrainerDao,40,109,2,4,9,32,5,8,3,7
+Gym CRM,com.gym.crm.dao,InMemoryTraineeDao,75,91,5,3,18,26,8,7,5,6
+Gym CRM,com.gym.crm.dao,InMemoryTrainingDao,13,90,1,1,2,28,2,6,1,6
+Gym CRM,com.gym.crm,GymCrmApplication,194,0,0,0,52,0,8,0,8,0
+Gym CRM,com.gym.crm.storage,StorageInitializer.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
+Gym CRM,com.gym.crm.storage,StorageInitializer,28,225,6,12,11,58,6,15,0,11
+Gym CRM,com.gym.crm.storage,StorageInitializer.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
+Gym CRM,com.gym.crm.storage,StorageInitializer.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
+Gym CRM,com.gym.crm.model,Training,144,52,20,0,23,23,14,15,4,15
+Gym CRM,com.gym.crm.model,Trainer,88,17,12,0,19,8,10,5,4,5
+Gym CRM,com.gym.crm.model,Trainee,110,18,14,0,23,9,13,5,6,5
+Gym CRM,com.gym.crm.model,User,108,38,16,0,19,17,12,11,4,11
+Gym CRM,com.gym.crm.model,TrainingType,39,13,6,0,9,6,7,3,4,3
+Gym CRM,com.gym.crm.util,UsernameGenerator,0,73,1,11,0,19,1,11,0,6
+Gym CRM,com.gym.crm.util,PasswordGenerator,0,35,0,2,0,7,0,3,0,2

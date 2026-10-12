@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InMemoryTraineeDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Gym CRM</a> &gt; <a href="index.source.html" class="el_package">com.gym.crm.dao</a> &gt; <span class="el_source">InMemoryTraineeDao.java</span></div><h1>InMemoryTraineeDao.java</h1><pre class="source lang-java linenums">package com.gym.crm.dao;
+
+import com.gym.crm.model.Trainee;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Repository
+<span class="fc" id="L18">public class InMemoryTraineeDao implements TraineeDao {</span>
+
+<span class="fc" id="L20">    private static final Logger LOGGER =</span>
+<span class="fc" id="L21">            LoggerFactory.getLogger(InMemoryTraineeDao.class);</span>
+
+    private Map&lt;Long, Trainee&gt; traineeStorage;
+<span class="fc" id="L24">    private final AtomicLong idSequence = new AtomicLong(0);</span>
+
+    @Autowired
+    public void setTraineeStorage(@Qualifier(&quot;traineeStorage&quot;) Map&lt;Long, Trainee&gt; traineeStorage) {
+<span class="fc" id="L28">        this.traineeStorage = traineeStorage;</span>
+
+<span class="fc" id="L30">        long highestExistingId = traineeStorage.keySet()</span>
+<span class="fc" id="L31">                .stream()</span>
+<span class="fc" id="L32">                .mapToLong(Long::longValue)</span>
+<span class="fc" id="L33">                .max()</span>
+<span class="fc" id="L34">                .orElse(0L);</span>
+
+<span class="fc" id="L36">        idSequence.set(highestExistingId);</span>
+
+<span class="fc" id="L38">        LOGGER.debug(</span>
+                &quot;Trainee storage injected. Next generated trainee ID will be {}.&quot;,
+<span class="fc" id="L40">                highestExistingId + 1</span>
+        );
+<span class="fc" id="L42">    }</span>
+
+    @Override
+    public Trainee save(Trainee trainee) {
+<span class="fc" id="L46">        Long id = trainee.getUserId();</span>
+
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if (id == null) {</span>
+<span class="fc" id="L49">            id = idSequence.incrementAndGet();</span>
+<span class="fc" id="L50">            trainee.setUserId(id);</span>
+        } else {
+<span class="nc" id="L52">            long providedId = id;</span>
+<span class="nc" id="L53">            idSequence.updateAndGet(current -&gt; Math.max(current, providedId));</span>
+        }
+
+<span class="fc" id="L56">        traineeStorage.put(id, trainee);</span>
+
+<span class="fc" id="L58">        LOGGER.debug(&quot;Saved trainee with id={}.&quot;, id);</span>
+
+<span class="fc" id="L60">        return trainee;</span>
+    }
+
+    @Override
+    public Trainee update(Trainee trainee) {
+<span class="nc" id="L65">        Long id = trainee.getUserId();</span>
+
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (id == null || !traineeStorage.containsKey(id)) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(</span>
+                    &quot;Cannot update trainee. Trainee with id=&quot; + id + &quot; does not exist.&quot;
+            );
+        }
+
+<span class="nc" id="L73">        traineeStorage.put(id, trainee);</span>
+
+<span class="nc" id="L75">        LOGGER.debug(&quot;Updated trainee with id={}.&quot;, id);</span>
+
+<span class="nc" id="L77">        return trainee;</span>
+    }
+
+    @Override
+    public boolean deleteById(Long id) {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        boolean deleted = traineeStorage.remove(id) != null;</span>
+
+<span class="fc" id="L84">        LOGGER.debug(&quot;Delete trainee with id={}: {}.&quot;, id, deleted);</span>
+
+<span class="fc" id="L86">        return deleted;</span>
+    }
+
+    @Override
+    public Optional&lt;Trainee&gt; findById(Long id) {
+<span class="fc" id="L91">        LOGGER.debug(&quot;Finding trainee by id={}.&quot;, id);</span>
+
+<span class="fc" id="L93">        return Optional.ofNullable(traineeStorage.get(id));</span>
+    }
+
+    @Override
+    public List&lt;Trainee&gt; findAll() {
+<span class="nc" id="L98">        LOGGER.debug(&quot;Finding all trainees. Count={}.&quot;, traineeStorage.size());</span>
+
+<span class="nc" id="L100">        return traineeStorage.values()</span>
+<span class="nc" id="L101">                .stream()</span>
+<span class="nc" id="L102">                .sorted(Comparator.comparing(Trainee::getUserId))</span>
+<span class="nc" id="L103">                .toList();</span>
+    }
+
+    @Override
+    public Optional&lt;Trainee&gt; findByUsername(String username) {
+<span class="nc" id="L108">        LOGGER.debug(&quot;Finding trainee by username='{}'.&quot;, username);</span>
+
+<span class="nc" id="L110">        return traineeStorage.values()</span>
+<span class="nc" id="L111">                .stream()</span>
+<span class="nc" id="L112">                .filter(trainee -&gt; username.equals(trainee.getUsername()))</span>
+<span class="nc" id="L113">                .findFirst();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
