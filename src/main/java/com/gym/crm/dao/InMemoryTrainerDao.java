@@ -65,12 +65,6 @@ public class InMemoryTrainerDao implements TrainerDao {
     public Trainer update(Trainer trainer) {
         Long id = trainer.getUserId();
 
-        if (id == null || !trainerStorage.containsKey(id)) {
-            throw new IllegalArgumentException(
-                    "Cannot update trainer. Trainer with id=" + id + " does not exist."
-            );
-        }
-
         trainerStorage.put(id, trainer);
 
         LOGGER.debug("Updated trainer with id={}.", id);

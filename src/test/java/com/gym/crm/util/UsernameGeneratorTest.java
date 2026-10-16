@@ -26,9 +26,7 @@ class UsernameGeneratorTest {
         traineeDao = Mockito.mock(TraineeDao.class);
         trainerDao = Mockito.mock(TrainerDao.class);
 
-        usernameGenerator = new UsernameGenerator();
-        usernameGenerator.setTraineeDao(traineeDao);
-        usernameGenerator.setTrainerDao(trainerDao);
+        usernameGenerator = new UsernameGenerator(traineeDao, trainerDao);
 
         when(traineeDao.findByUsername(anyString())).thenReturn(Optional.empty());
         when(trainerDao.findByUsername(anyString())).thenReturn(Optional.empty());

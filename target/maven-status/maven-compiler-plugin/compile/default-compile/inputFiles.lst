@@ -21,7 +21,6 @@
 /Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/service/TrainingServiceImpl.java
 /Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/service/exception/EntityNotFoundException.java
 /Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/service/exception/InvalidTrainingException.java
-/Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/service/exception/TraineeService.java
 /Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/storage/StorageInitializer.java
 /Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/util/PasswordGenerator.java
 /Users/macos/Desktop/GYM-CRM/src/main/java/com/gym/crm/util/UsernameGenerator.java

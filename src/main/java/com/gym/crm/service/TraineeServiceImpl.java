@@ -18,22 +18,18 @@ public class TraineeServiceImpl implements TraineeService {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(TraineeServiceImpl.class);
 
-    private TraineeDao traineeDao;
-    private UsernameGenerator usernameGenerator;
-    private PasswordGenerator passwordGenerator;
+    private final TraineeDao traineeDao;
+    private final UsernameGenerator usernameGenerator;
+    private final PasswordGenerator passwordGenerator;
 
     @Autowired
-    public void setTraineeDao(TraineeDao traineeDao) {
+    public TraineeServiceImpl(
+            TraineeDao traineeDao,
+            UsernameGenerator usernameGenerator,
+            PasswordGenerator passwordGenerator
+    ) {
         this.traineeDao = traineeDao;
-    }
-
-    @Autowired
-    public void setUsernameGenerator(UsernameGenerator usernameGenerator) {
         this.usernameGenerator = usernameGenerator;
-    }
-
-    @Autowired
-    public void setPasswordGenerator(PasswordGenerator passwordGenerator) {
         this.passwordGenerator = passwordGenerator;
     }
 

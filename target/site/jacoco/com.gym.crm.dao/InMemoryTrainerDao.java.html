@@ -65,44 +65,38 @@ import java.util.concurrent.atomic.AtomicLong;
     public Trainer update(Trainer trainer) {
 <span class="fc" id="L66">        Long id = trainer.getUserId();</span>
 
-<span class="pc bpc" id="L68" title="1 of 4 branches missed.">        if (id == null || !trainerStorage.containsKey(id)) {</span>
-<span class="fc" id="L69">            throw new IllegalArgumentException(</span>
-                    &quot;Cannot update trainer. Trainer with id=&quot; + id + &quot; does not exist.&quot;
-            );
-        }
+<span class="fc" id="L68">        trainerStorage.put(id, trainer);</span>
 
-<span class="fc" id="L74">        trainerStorage.put(id, trainer);</span>
+<span class="fc" id="L70">        LOGGER.debug(&quot;Updated trainer with id={}.&quot;, id);</span>
 
-<span class="fc" id="L76">        LOGGER.debug(&quot;Updated trainer with id={}.&quot;, id);</span>
-
-<span class="fc" id="L78">        return trainer;</span>
+<span class="fc" id="L72">        return trainer;</span>
     }
 
     @Override
     public Optional&lt;Trainer&gt; findById(Long id) {
-<span class="nc" id="L83">        LOGGER.debug(&quot;Finding trainer by id={}.&quot;, id);</span>
+<span class="nc" id="L77">        LOGGER.debug(&quot;Finding trainer by id={}.&quot;, id);</span>
 
-<span class="nc" id="L85">        return Optional.ofNullable(trainerStorage.get(id));</span>
+<span class="nc" id="L79">        return Optional.ofNullable(trainerStorage.get(id));</span>
     }
 
     @Override
     public List&lt;Trainer&gt; findAll() {
-<span class="nc" id="L90">        LOGGER.debug(&quot;Finding all trainers. Count={}.&quot;, trainerStorage.size());</span>
+<span class="nc" id="L84">        LOGGER.debug(&quot;Finding all trainers. Count={}.&quot;, trainerStorage.size());</span>
 
-<span class="nc" id="L92">        return trainerStorage.values()</span>
-<span class="nc" id="L93">                .stream()</span>
-<span class="nc" id="L94">                .sorted(Comparator.comparing(Trainer::getUserId))</span>
-<span class="nc" id="L95">                .toList();</span>
+<span class="nc" id="L86">        return trainerStorage.values()</span>
+<span class="nc" id="L87">                .stream()</span>
+<span class="nc" id="L88">                .sorted(Comparator.comparing(Trainer::getUserId))</span>
+<span class="nc" id="L89">                .toList();</span>
     }
 
     @Override
     public Optional&lt;Trainer&gt; findByUsername(String username) {
-<span class="fc" id="L100">        LOGGER.debug(&quot;Finding trainer by username='{}'.&quot;, username);</span>
+<span class="fc" id="L94">        LOGGER.debug(&quot;Finding trainer by username='{}'.&quot;, username);</span>
 
-<span class="fc" id="L102">        return trainerStorage.values()</span>
-<span class="fc" id="L103">                .stream()</span>
-<span class="fc" id="L104">                .filter(trainer -&gt; username.equals(trainer.getUsername()))</span>
-<span class="fc" id="L105">                .findFirst();</span>
+<span class="fc" id="L96">        return trainerStorage.values()</span>
+<span class="fc" id="L97">                .stream()</span>
+<span class="fc" id="L98">                .filter(trainer -&gt; username.equals(trainer.getUsername()))</span>
+<span class="fc" id="L99">                .findFirst();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

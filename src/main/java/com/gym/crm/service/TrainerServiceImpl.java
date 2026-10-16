@@ -18,22 +18,19 @@ public class TrainerServiceImpl implements TrainerService {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(TrainerServiceImpl.class);
 
-    private TrainerDao trainerDao;
-    private UsernameGenerator usernameGenerator;
-    private PasswordGenerator passwordGenerator;
+    private final TrainerDao trainerDao;
+    private final UsernameGenerator usernameGenerator;
+    private final PasswordGenerator passwordGenerator;
+
 
     @Autowired
-    public void setTrainerDao(TrainerDao trainerDao) {
+    public TrainerServiceImpl(
+            TrainerDao trainerDao,
+            UsernameGenerator usernameGenerator,
+            PasswordGenerator passwordGenerator
+    ) {
         this.trainerDao = trainerDao;
-    }
-
-    @Autowired
-    public void setUsernameGenerator(UsernameGenerator usernameGenerator) {
         this.usernameGenerator = usernameGenerator;
-    }
-
-    @Autowired
-    public void setPasswordGenerator(PasswordGenerator passwordGenerator) {
         this.passwordGenerator = passwordGenerator;
     }
 

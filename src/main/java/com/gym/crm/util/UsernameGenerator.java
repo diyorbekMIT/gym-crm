@@ -10,16 +10,12 @@ import java.util.Locale;
 @Component
 public class UsernameGenerator {
 
-    private TraineeDao traineeDao;
-    private TrainerDao trainerDao;
+    private final TraineeDao traineeDao;
+    private final TrainerDao trainerDao;
 
     @Autowired
-    public void setTraineeDao(TraineeDao traineeDao) {
+    public UsernameGenerator(TraineeDao traineeDao, TrainerDao trainerDao) {
         this.traineeDao = traineeDao;
-    }
-
-    @Autowired
-    public void setTrainerDao(TrainerDao trainerDao) {
         this.trainerDao = trainerDao;
     }
 

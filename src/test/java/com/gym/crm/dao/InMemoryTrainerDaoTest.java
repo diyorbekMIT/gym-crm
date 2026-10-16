@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class InMemoryTrainerDaoTest {
 
@@ -52,23 +51,13 @@ class InMemoryTrainerDaoTest {
     }
 
     @Test
-    void shouldUpdateExistingTrainer() {
+    void shouldOverwriteEntryOnUpdate() {
         Trainer trainer = trainerStorage.get(4L);
         trainer.setFirstName("Updated");
 
-        Trainer updatedTrainer = trainerDao.update(trainer);
+        Trainer result = trainerDao.update(trainer);
 
-        assertThat(updatedTrainer.getFirstName()).isEqualTo("Updated");
+        assertThat(result.getFirstName()).isEqualTo("Updated");
         assertThat(trainerStorage.get(4L).getFirstName()).isEqualTo("Updated");
-    }
-
-    @Test
-    void shouldRejectUpdateForUnknownTrainer() {
-        Trainer unknownTrainer = new Trainer();
-        unknownTrainer.setUserId(999L);
-
-        assertThatThrownBy(() -> trainerDao.update(unknownTrainer))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("does not exist");
     }
 }

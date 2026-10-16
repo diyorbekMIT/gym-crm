@@ -19,22 +19,18 @@ public class TrainingServiceImpl implements TrainingService {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(TrainingServiceImpl.class);
 
-    private TrainingDao trainingDao;
-    private TraineeDao traineeDao;
-    private TrainerDao trainerDao;
+    private final TrainingDao trainingDao;
+    private final TraineeDao traineeDao;
+    private final TrainerDao trainerDao;
 
     @Autowired
-    public void setTrainingDao(TrainingDao trainingDao) {
+    public TrainingServiceImpl(
+            TrainingDao trainingDao,
+            TraineeDao traineeDao,
+            TrainerDao trainerDao
+    ) {
         this.trainingDao = trainingDao;
-    }
-
-    @Autowired
-    public void setTraineeDao(TraineeDao traineeDao) {
         this.traineeDao = traineeDao;
-    }
-
-    @Autowired
-    public void setTrainerDao(TrainerDao trainerDao) {
         this.trainerDao = trainerDao;
     }
 

@@ -64,12 +64,6 @@ public class InMemoryTraineeDao implements TraineeDao {
     public Trainee update(Trainee trainee) {
         Long id = trainee.getUserId();
 
-        if (id == null || !traineeStorage.containsKey(id)) {
-            throw new IllegalArgumentException(
-                    "Cannot update trainee. Trainee with id=" + id + " does not exist."
-            );
-        }
-
         traineeStorage.put(id, trainee);
 
         LOGGER.debug("Updated trainee with id={}.", id);

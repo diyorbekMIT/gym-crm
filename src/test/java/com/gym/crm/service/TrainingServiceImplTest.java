@@ -8,6 +8,7 @@ import com.gym.crm.model.Trainer;
 import com.gym.crm.model.Training;
 import com.gym.crm.model.TrainingType;
 import com.gym.crm.service.exception.EntityNotFoundException;
+import com.gym.crm.service.exception.InvalidTrainingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +34,10 @@ class TrainingServiceImplTest {
         traineeDao = mock(TraineeDao.class);
         trainerDao = mock(TrainerDao.class);
 
-        trainingService = new TrainingServiceImpl();
-        trainingService.setTrainingDao(trainingDao);
-        trainingService.setTraineeDao(traineeDao);
-        trainingService.setTrainerDao(trainerDao);
+        trainingService = new TrainingServiceImpl(trainingDao, traineeDao, trainerDao);
     }
+
+    // ==================== create (happy path) ====================
 
     @Test
     void shouldSaveTrainingWhenTraineeAndTrainerExist() {
@@ -61,6 +61,85 @@ class TrainingServiceImplTest {
         assertThat(result.getId()).isEqualTo(10L);
 
         verify(trainingDao).save(training);
+    }
+
+    // ==================== create (failure scenarios) ====================
+
+    @Test
+    void shouldRejectNullTrainingOnCreate() {
+        assertThatThrownBy(() -> trainingService.create(null))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training must not be null.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithNullTraineeId() {
+        Training training = validTraining();
+        training.setTraineeId(null);
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training trainee ID must be a positive number.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithZeroTraineeId() {
+        Training training = validTraining();
+        training.setTraineeId(0L);
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training trainee ID must be a positive number.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithNullTrainerId() {
+        Training training = validTraining();
+        training.setTrainerId(null);
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training trainer ID must be a positive number.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithBlankName() {
+        Training training = validTraining();
+        training.setTrainingName("  ");
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training name must not be blank.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithNullType() {
+        Training training = validTraining();
+        training.setTrainingType(null);
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training type must not be null.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithNullDate() {
+        Training training = validTraining();
+        training.setTrainingDate(null);
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training date must not be null.");
+    }
+
+    @Test
+    void shouldRejectTrainingWithZeroDuration() {
+        Training training = validTraining();
+        training.setTrainingDuration(0);
+
+        assertThatThrownBy(() -> trainingService.create(training))
+                .isInstanceOf(InvalidTrainingException.class)
+                .hasMessage("Training duration must be a positive number of minutes.");
     }
 
     @Test
@@ -88,6 +167,45 @@ class TrainingServiceImplTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Trainer with id=2 was not found.");
     }
+
+    // ==================== findById ====================
+
+    @Test
+    void shouldReturnTrainingWhenFoundById() {
+        Training training = new Training();
+        training.setId(5L);
+
+        when(trainingDao.findById(5L)).thenReturn(Optional.of(training));
+
+        Training result = trainingService.findById(5L);
+
+        assertThat(result).isSameAs(training);
+    }
+
+    @Test
+    void shouldRejectNullIdOnFindById() {
+        assertThatThrownBy(() -> trainingService.findById(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Training ID must be a positive number.");
+    }
+
+    @Test
+    void shouldRejectNegativeIdOnFindById() {
+        assertThatThrownBy(() -> trainingService.findById(-5L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Training ID must be a positive number.");
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundWhenTrainingNotFound() {
+        when(trainingDao.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> trainingService.findById(99L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Training with id=99 was not found.");
+    }
+
+    // ==================== helpers ====================
 
     private Training validTraining() {
         Training training = new Training();

@@ -9,6 +9,8 @@ import com.gym.crm.service.TrainingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -34,6 +36,8 @@ class GymFacadeTest {
         );
     }
 
+    // ==================== Trainee ====================
+
     @Test
     void shouldDelegateTraineeCreationToTraineeService() {
         Trainee trainee = new Trainee();
@@ -45,6 +49,53 @@ class GymFacadeTest {
         assertThat(result).isSameAs(trainee);
         verify(traineeService).create(trainee);
     }
+
+    @Test
+    void shouldDelegateTraineeUpdateToTraineeService() {
+        Trainee trainee = new Trainee();
+        trainee.setUserId(1L);
+
+        when(traineeService.update(trainee)).thenReturn(trainee);
+
+        Trainee result = gymFacade.updateTrainee(trainee);
+
+        assertThat(result).isSameAs(trainee);
+        verify(traineeService).update(trainee);
+    }
+
+    @Test
+    void shouldDelegateTraineeDeletionToTraineeService() {
+        gymFacade.deleteTraineeById(5L);
+
+        verify(traineeService).deleteById(5L);
+    }
+
+    @Test
+    void shouldDelegateGetTraineeByIdToTraineeService() {
+        Trainee trainee = new Trainee();
+        trainee.setUserId(1L);
+
+        when(traineeService.findById(1L)).thenReturn(trainee);
+
+        Trainee result = gymFacade.getTraineeById(1L);
+
+        assertThat(result).isSameAs(trainee);
+        verify(traineeService).findById(1L);
+    }
+
+    @Test
+    void shouldDelegateGetAllTraineesToTraineeService() {
+        List<Trainee> trainees = List.of(new Trainee(), new Trainee());
+
+        when(traineeService.findAll()).thenReturn(trainees);
+
+        List<Trainee> result = gymFacade.getAllTrainees();
+
+        assertThat(result).isSameAs(trainees);
+        verify(traineeService).findAll();
+    }
+
+    // ==================== Trainer ====================
 
     @Test
     void shouldDelegateTrainerCreationToTrainerService() {
@@ -59,6 +110,46 @@ class GymFacadeTest {
     }
 
     @Test
+    void shouldDelegateTrainerUpdateToTrainerService() {
+        Trainer trainer = new Trainer();
+        trainer.setUserId(1L);
+
+        when(trainerService.update(trainer)).thenReturn(trainer);
+
+        Trainer result = gymFacade.updateTrainer(trainer);
+
+        assertThat(result).isSameAs(trainer);
+        verify(trainerService).update(trainer);
+    }
+
+    @Test
+    void shouldDelegateGetTrainerByIdToTrainerService() {
+        Trainer trainer = new Trainer();
+        trainer.setUserId(2L);
+
+        when(trainerService.findById(2L)).thenReturn(trainer);
+
+        Trainer result = gymFacade.getTrainerById(2L);
+
+        assertThat(result).isSameAs(trainer);
+        verify(trainerService).findById(2L);
+    }
+
+    @Test
+    void shouldDelegateGetAllTrainersToTrainerService() {
+        List<Trainer> trainers = List.of(new Trainer(), new Trainer());
+
+        when(trainerService.findAll()).thenReturn(trainers);
+
+        List<Trainer> result = gymFacade.getAllTrainers();
+
+        assertThat(result).isSameAs(trainers);
+        verify(trainerService).findAll();
+    }
+
+    // ==================== Training ====================
+
+    @Test
     void shouldDelegateTrainingCreationToTrainingService() {
         Training training = new Training();
 
@@ -71,9 +162,27 @@ class GymFacadeTest {
     }
 
     @Test
-    void shouldDelegateTraineeDeletionToTraineeService() {
-        gymFacade.deleteTraineeById(5L);
+    void shouldDelegateGetTrainingByIdToTrainingService() {
+        Training training = new Training();
+        training.setId(3L);
 
-        verify(traineeService).deleteById(5L);
+        when(trainingService.findById(3L)).thenReturn(training);
+
+        Training result = gymFacade.getTrainingById(3L);
+
+        assertThat(result).isSameAs(training);
+        verify(trainingService).findById(3L);
+    }
+
+    @Test
+    void shouldDelegateGetAllTrainingsToTrainingService() {
+        List<Training> trainings = List.of(new Training(), new Training());
+
+        when(trainingService.findAll()).thenReturn(trainings);
+
+        List<Training> result = gymFacade.getAllTrainings();
+
+        assertThat(result).isSameAs(trainings);
+        verify(trainingService).findAll();
     }
 }

@@ -1,6 +1,5 @@
 package com.gym.crm.dao;
 
-import com.gym.crm.model.Trainee;
 import com.gym.crm.model.Training;
 
 import java.util.List;

@@ -14,77 +14,73 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-<span class="fc" id="L17">public class TrainingServiceImpl implements TrainingService {</span>
+public class TrainingServiceImpl implements TrainingService {
 
 <span class="fc" id="L19">    private static final Logger LOGGER =</span>
 <span class="fc" id="L20">            LoggerFactory.getLogger(TrainingServiceImpl.class);</span>
 
-    private TrainingDao trainingDao;
-    private TraineeDao traineeDao;
-    private TrainerDao trainerDao;
+    private final TrainingDao trainingDao;
+    private final TraineeDao traineeDao;
+    private final TrainerDao trainerDao;
 
     @Autowired
-    public void setTrainingDao(TrainingDao trainingDao) {
-<span class="fc" id="L28">        this.trainingDao = trainingDao;</span>
-<span class="fc" id="L29">    }</span>
-
-    @Autowired
-    public void setTraineeDao(TraineeDao traineeDao) {
+    public TrainingServiceImpl(
+            TrainingDao trainingDao,
+            TraineeDao traineeDao,
+            TrainerDao trainerDao
+<span class="fc" id="L31">    ) {</span>
+<span class="fc" id="L32">        this.trainingDao = trainingDao;</span>
 <span class="fc" id="L33">        this.traineeDao = traineeDao;</span>
-<span class="fc" id="L34">    }</span>
-
-    @Autowired
-    public void setTrainerDao(TrainerDao trainerDao) {
-<span class="fc" id="L38">        this.trainerDao = trainerDao;</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L34">        this.trainerDao = trainerDao;</span>
+<span class="fc" id="L35">    }</span>
 
     @Override
     public Training create(Training training) {
-<span class="fc" id="L43">        validateTrainingForCreation(training);</span>
+<span class="fc" id="L39">        validateTrainingForCreation(training);</span>
 
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (traineeDao.findById(training.getTraineeId()).isEmpty()) {</span>
-<span class="fc" id="L46">            LOGGER.warn(</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (traineeDao.findById(training.getTraineeId()).isEmpty()) {</span>
+<span class="fc" id="L42">            LOGGER.warn(</span>
                     &quot;Cannot create training. Trainee id={} was not found.&quot;,
-<span class="fc" id="L48">                    training.getTraineeId()</span>
+<span class="fc" id="L44">                    training.getTraineeId()</span>
             );
 
-<span class="fc" id="L51">            throw new EntityNotFoundException(</span>
-<span class="fc" id="L52">                    &quot;Trainee with id=&quot; + training.getTraineeId() + &quot; was not found.&quot;</span>
+<span class="fc" id="L47">            throw new EntityNotFoundException(</span>
+<span class="fc" id="L48">                    &quot;Trainee with id=&quot; + training.getTraineeId() + &quot; was not found.&quot;</span>
             );
         }
 
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (trainerDao.findById(training.getTrainerId()).isEmpty()) {</span>
-<span class="fc" id="L57">            LOGGER.warn(</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (trainerDao.findById(training.getTrainerId()).isEmpty()) {</span>
+<span class="fc" id="L53">            LOGGER.warn(</span>
                     &quot;Cannot create training. Trainer id={} was not found.&quot;,
-<span class="fc" id="L59">                    training.getTrainerId()</span>
+<span class="fc" id="L55">                    training.getTrainerId()</span>
             );
 
-<span class="fc" id="L62">            throw new EntityNotFoundException(</span>
-<span class="fc" id="L63">                    &quot;Trainer with id=&quot; + training.getTrainerId() + &quot; was not found.&quot;</span>
+<span class="fc" id="L58">            throw new EntityNotFoundException(</span>
+<span class="fc" id="L59">                    &quot;Trainer with id=&quot; + training.getTrainerId() + &quot; was not found.&quot;</span>
             );
         }
 
-<span class="fc" id="L67">        Training savedTraining = trainingDao.save(training);</span>
+<span class="fc" id="L63">        Training savedTraining = trainingDao.save(training);</span>
 
-<span class="fc" id="L69">        LOGGER.info(</span>
+<span class="fc" id="L65">        LOGGER.info(</span>
                 &quot;Created training: id={}, traineeId={}, trainerId={}.&quot;,
-<span class="fc" id="L71">                savedTraining.getId(),</span>
-<span class="fc" id="L72">                savedTraining.getTraineeId(),</span>
-<span class="fc" id="L73">                savedTraining.getTrainerId()</span>
+<span class="fc" id="L67">                savedTraining.getId(),</span>
+<span class="fc" id="L68">                savedTraining.getTraineeId(),</span>
+<span class="fc" id="L69">                savedTraining.getTrainerId()</span>
         );
 
-<span class="fc" id="L76">        return savedTraining;</span>
+<span class="fc" id="L72">        return savedTraining;</span>
     }
 
     @Override
     public Training findById(Long id) {
-<span class="nc" id="L81">        validateId(id);</span>
+<span class="fc" id="L77">        validateId(id);</span>
 
-<span class="nc" id="L83">        return trainingDao.findById(id)</span>
-<span class="nc" id="L84">                .orElseThrow(() -&gt; {</span>
-<span class="nc" id="L85">                    LOGGER.warn(&quot;Training with id={} was not found.&quot;, id);</span>
+<span class="fc" id="L79">        return trainingDao.findById(id)</span>
+<span class="fc" id="L80">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L81">                    LOGGER.warn(&quot;Training with id={} was not found.&quot;, id);</span>
 
-<span class="nc" id="L87">                    return new EntityNotFoundException(</span>
+<span class="fc" id="L83">                    return new EntityNotFoundException(</span>
                             &quot;Training with id=&quot; + id + &quot; was not found.&quot;
                     );
                 });
@@ -92,63 +88,63 @@ import java.util.List;
 
     @Override
     public List&lt;Training&gt; findAll() {
-<span class="nc" id="L95">        List&lt;Training&gt; trainings = trainingDao.findAll();</span>
+<span class="nc" id="L91">        List&lt;Training&gt; trainings = trainingDao.findAll();</span>
 
-<span class="nc" id="L97">        LOGGER.info(&quot;Selected {} training(s).&quot;, trainings.size());</span>
+<span class="nc" id="L93">        LOGGER.info(&quot;Selected {} training(s).&quot;, trainings.size());</span>
 
-<span class="nc" id="L99">        return trainings;</span>
+<span class="nc" id="L95">        return trainings;</span>
     }
 
     private void validateTrainingForCreation(Training training) {
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if (training == null) {</span>
-<span class="nc" id="L104">            throw new InvalidTrainingException(&quot;Training must not be null.&quot;);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (training == null) {</span>
+<span class="fc" id="L100">            throw new InvalidTrainingException(&quot;Training must not be null.&quot;);</span>
         }
 
-<span class="pc bpc" id="L107" title="2 of 4 branches missed.">        if (training.getTraineeId() == null || training.getTraineeId() &lt;= 0) {</span>
-<span class="nc" id="L108">            throw new InvalidTrainingException(</span>
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (training.getTraineeId() == null || training.getTraineeId() &lt;= 0) {</span>
+<span class="fc" id="L104">            throw new InvalidTrainingException(</span>
                     &quot;Training trainee ID must be a positive number.&quot;
             );
         }
 
-<span class="pc bpc" id="L113" title="2 of 4 branches missed.">        if (training.getTrainerId() == null || training.getTrainerId() &lt;= 0) {</span>
-<span class="nc" id="L114">            throw new InvalidTrainingException(</span>
+<span class="pc bpc" id="L109" title="1 of 4 branches missed.">        if (training.getTrainerId() == null || training.getTrainerId() &lt;= 0) {</span>
+<span class="fc" id="L110">            throw new InvalidTrainingException(</span>
                     &quot;Training trainer ID must be a positive number.&quot;
             );
         }
 
-<span class="pc bpc" id="L119" title="2 of 4 branches missed.">        if (training.getTrainingName() == null || training.getTrainingName().isBlank()) {</span>
-<span class="nc" id="L120">            throw new InvalidTrainingException(</span>
+<span class="pc bpc" id="L115" title="1 of 4 branches missed.">        if (training.getTrainingName() == null || training.getTrainingName().isBlank()) {</span>
+<span class="fc" id="L116">            throw new InvalidTrainingException(</span>
                     &quot;Training name must not be blank.&quot;
             );
         }
 
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (training.getTrainingType() == null) {</span>
-<span class="nc" id="L126">            throw new InvalidTrainingException(</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (training.getTrainingType() == null) {</span>
+<span class="fc" id="L122">            throw new InvalidTrainingException(</span>
                     &quot;Training type must not be null.&quot;
             );
         }
 
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (training.getTrainingDate() == null) {</span>
-<span class="nc" id="L132">            throw new InvalidTrainingException(</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (training.getTrainingDate() == null) {</span>
+<span class="fc" id="L128">            throw new InvalidTrainingException(</span>
                     &quot;Training date must not be null.&quot;
             );
         }
 
-<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        if (training.getTrainingDuration() == null</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                || training.getTrainingDuration() &lt;= 0) {</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (training.getTrainingDuration() == null</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                || training.getTrainingDuration() &lt;= 0) {</span>
 
-<span class="nc" id="L140">            throw new InvalidTrainingException(</span>
+<span class="fc" id="L136">            throw new InvalidTrainingException(</span>
                     &quot;Training duration must be a positive number of minutes.&quot;
             );
         }
-<span class="fc" id="L144">    }</span>
+<span class="fc" id="L140">    }</span>
 
     private void validateId(Long id) {
-<span class="nc bnc" id="L147" title="All 4 branches missed.">        if (id == null || id &lt;= 0) {</span>
-<span class="nc" id="L148">            throw new IllegalArgumentException(</span>
+<span class="fc bfc" id="L143" title="All 4 branches covered.">        if (id == null || id &lt;= 0) {</span>
+<span class="fc" id="L144">            throw new IllegalArgumentException(</span>
                     &quot;Training ID must be a positive number.&quot;
             );
         }
-<span class="nc" id="L152">    }</span>
+<span class="fc" id="L148">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

@@ -16,7 +16,6 @@ com/gym/crm/service/TrainerService.class
 com/gym/crm/dao/TraineeDao.class
 com/gym/crm/model/User.class
 com/gym/crm/util/UsernameGenerator.class
-com/gym/crm/service/exception/TraineeService.class
 com/gym/crm/service/TrainingService.class
 com/gym/crm/facade/GymFacade.class
 com/gym/crm/config/StorageConfig.class
