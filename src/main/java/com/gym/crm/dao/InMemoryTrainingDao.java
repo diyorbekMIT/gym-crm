@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,50 @@ public class InMemoryTrainingDao implements TrainingDao {
         return trainingStorage.values()
                 .stream()
                 .sorted(Comparator.comparing(Training::getId))
+                .toList();
+    }
+
+    @Override
+    public List<Training> findForTrainee(
+            Long traineeId,
+            LocalDate fromDate,
+            LocalDate toDate,
+            String trainerName,
+            Long trainingTypeId
+    ) {
+        LOGGER.debug("Finding trainings for traineeId={}.", traineeId);
+
+        return trainingStorage.values().stream()
+                .filter(t -> traineeId.equals(t.getTraineeId()))
+                .filter(t -> fromDate == null
+                        || !t.getTrainingDate().isBefore(fromDate))
+                .filter(t -> toDate == null
+                        || !t.getTrainingDate().isAfter(toDate))
+                .filter(t -> trainerName == null || trainerName.isBlank()
+                        || trainerName.equals(String.valueOf(t.getTrainerId())))
+                .filter(t -> trainingTypeId == null)
+                .sorted(Comparator.comparing(Training::getTrainingDate))
+                .toList();
+    }
+
+    @Override
+    public List<Training> findForTrainer(
+            Long trainerId,
+            LocalDate fromDate,
+            LocalDate toDate,
+            String traineeName
+    ) {
+        LOGGER.debug("Finding trainings for trainerId={}.", trainerId);
+
+        return trainingStorage.values().stream()
+                .filter(t -> trainerId.equals(t.getTrainerId()))
+                .filter(t -> fromDate == null
+                        || !t.getTrainingDate().isBefore(fromDate))
+                .filter(t -> toDate == null
+                        || !t.getTrainingDate().isAfter(toDate))
+                .filter(t -> traineeName == null || traineeName.isBlank()
+                        || traineeName.equals(String.valueOf(t.getTraineeId())))
+                .sorted(Comparator.comparing(Training::getTrainingDate))
                 .toList();
     }
 }
