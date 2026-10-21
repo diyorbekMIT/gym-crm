@@ -1,81 +1,77 @@
-# Gym CRM — Spring Core
+# Gym CRM — Hibernate / Spring Data JPA
 
-A Spring Core module for managing gym trainees, trainers, and training sessions.
-
-## Features
-
-- Create, update, delete, and select trainee profiles
-- Create, update, and select trainer profiles
-- Create and select training sessions
-- In-memory `ConcurrentHashMap` storage
-- Separate storage namespace for trainees, trainers, and trainings
-- JSON seed-data initialization at application startup
-- Spring `BeanPostProcessor` used to initialize storage
-- Automatic username generation:
-    - `John.Smith`
-    - `John.Smith1`
-    - `John.Smith2`
-- Random 10-character alphanumeric password generation
-- Constructor injection in `GymFacade`
-- Setter injection for DAOs, services, and utilities
-- Unit and Spring integration tests
-- SLF4J and Logback logging
-- JaCoCo code coverage report
+A Java console-oriented CRM application implementing trainee, trainer,
+training, authentication, profile management, trainer assignment, and
+training-management features using Spring and Hibernate/JPA.
 
 ## Technologies
 
 - Java 21
-- Spring Framework Core
-- Maven
-- Jackson
-- SLF4J and Logback
+- Spring Framework
+- Hibernate / Spring Data JPA
+- H2 database
 - JUnit 5
 - Mockito
 - AssertJ
-- JaCoCo
+- Maven
 
-## Project structure
+## Architecture
 
-```text
-com.gym.crm
-├── config     # Spring Java configuration
-├── model      # Domain entities
-├── storage    # JSON storage initialization
-├── dao        # In-memory data access objects
-├── util       # Username and password generators
-├── service    # Business logic
-└── facade     # Single application entry facade
-```
+- `entity` — JPA entities
+- `dao` — Spring Data JPA repositories
+- `service.jpa` — transactional business services
+- `facade` — authenticated API facade
+- `config` — Spring and persistence configuration
+- `exception` — application exceptions
 
-## Run tests
+## Key services
+
+- `AuthenticationService` — credential matching
+- `ProfileRegistrationService` — trainee and trainer registration
+- `ProfileAccountService` — profile retrieval and password changes
+- `ProfileManagementService` — profile updates and activation status
+- `TrainingManagementService` — training creation
+- `TrainingQueryService` — filtered training searches
+- `TrainerAssignmentService` — trainer assignment management
+- `TraineeDeletionService` — authenticated trainee deletion
+
+## Security model
+
+Every operation requires the user’s username and current password.
+Credentials are checked before business logic runs.
+
+Passwords are stored as plain text only because this assignment does not
+require hashing. In production, passwords must be hashed with a modern
+password encoder such as BCrypt.
+
+## Database
+
+The application uses H2 with Hibernate-managed schema generation.
+
+Training types are initialized automatically at startup.
+
+## Build and test
 
 ```bash
-mvn clean test
+mvn clean verify
 ```
 
-## Run the application
+## Run
 
 ```bash
 mvn clean compile exec:java
 ```
 
-## Run verification and coverage
+## API
 
-```bash
-mvn clean verify
-open target/site/jacoco/index.html
-```
+`JpaGymFacade` exposes the application operations:
 
-## Seed data
-
-Initial data is located at:
-
-```text
-src/main/resources/data/init-data.json
-```
-
-The initialization-file path is configured in:
-
-```text
-src/main/resources/application.properties
-```
+- Create trainee or trainer
+- Retrieve profile
+- Change password
+- Update profile
+- Activate or deactivate profile
+- Add training
+- Search trainee or trainer trainings
+- List and replace assigned trainers
+- Delete trainee

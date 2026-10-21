@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -15,96 +14,96 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-<span class="fc" id="L18">public class InMemoryTraineeDao implements TraineeDao {</span>
+<span class="fc" id="L17">public class InMemoryTraineeDao implements TraineeDao {</span>
 
-<span class="fc" id="L20">    private static final Logger LOGGER =</span>
-<span class="fc" id="L21">            LoggerFactory.getLogger(InMemoryTraineeDao.class);</span>
+<span class="fc" id="L19">    private static final Logger LOGGER =</span>
+<span class="fc" id="L20">            LoggerFactory.getLogger(InMemoryTraineeDao.class);</span>
 
     private Map&lt;Long, Trainee&gt; traineeStorage;
-<span class="fc" id="L24">    private final AtomicLong idSequence = new AtomicLong(0);</span>
+<span class="fc" id="L23">    private final AtomicLong idSequence = new AtomicLong(0);</span>
 
     @Autowired
     public void setTraineeStorage(@Qualifier(&quot;traineeStorage&quot;) Map&lt;Long, Trainee&gt; traineeStorage) {
-<span class="fc" id="L28">        this.traineeStorage = traineeStorage;</span>
+<span class="fc" id="L27">        this.traineeStorage = traineeStorage;</span>
 
-<span class="fc" id="L30">        long highestExistingId = traineeStorage.keySet()</span>
-<span class="fc" id="L31">                .stream()</span>
-<span class="fc" id="L32">                .mapToLong(Long::longValue)</span>
-<span class="fc" id="L33">                .max()</span>
-<span class="fc" id="L34">                .orElse(0L);</span>
+<span class="fc" id="L29">        long highestExistingId = traineeStorage.keySet()</span>
+<span class="fc" id="L30">                .stream()</span>
+<span class="fc" id="L31">                .mapToLong(Long::longValue)</span>
+<span class="fc" id="L32">                .max()</span>
+<span class="fc" id="L33">                .orElse(0L);</span>
 
-<span class="fc" id="L36">        idSequence.set(highestExistingId);</span>
+<span class="fc" id="L35">        idSequence.set(highestExistingId);</span>
 
-<span class="fc" id="L38">        LOGGER.debug(</span>
+<span class="fc" id="L37">        LOGGER.debug(</span>
                 &quot;Trainee storage injected. Next generated trainee ID will be {}.&quot;,
-<span class="fc" id="L40">                highestExistingId + 1</span>
+<span class="fc" id="L39">                highestExistingId + 1</span>
         );
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L41">    }</span>
 
     @Override
     public Trainee save(Trainee trainee) {
-<span class="fc" id="L46">        Long id = trainee.getUserId();</span>
+<span class="fc" id="L45">        Long id = trainee.getUserId();</span>
 
-<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if (id == null) {</span>
-<span class="fc" id="L49">            id = idSequence.incrementAndGet();</span>
-<span class="fc" id="L50">            trainee.setUserId(id);</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (id == null) {</span>
+<span class="fc" id="L48">            id = idSequence.incrementAndGet();</span>
+<span class="fc" id="L49">            trainee.setUserId(id);</span>
         } else {
-<span class="nc" id="L52">            long providedId = id;</span>
-<span class="nc" id="L53">            idSequence.updateAndGet(current -&gt; Math.max(current, providedId));</span>
+<span class="nc" id="L51">            long providedId = id;</span>
+<span class="nc" id="L52">            idSequence.updateAndGet(current -&gt; Math.max(current, providedId));</span>
         }
 
-<span class="fc" id="L56">        traineeStorage.put(id, trainee);</span>
+<span class="fc" id="L55">        traineeStorage.put(id, trainee);</span>
 
-<span class="fc" id="L58">        LOGGER.debug(&quot;Saved trainee with id={}.&quot;, id);</span>
+<span class="fc" id="L57">        LOGGER.debug(&quot;Saved trainee with id={}.&quot;, id);</span>
 
-<span class="fc" id="L60">        return trainee;</span>
+<span class="fc" id="L59">        return trainee;</span>
     }
 
     @Override
     public Trainee update(Trainee trainee) {
-<span class="nc" id="L65">        Long id = trainee.getUserId();</span>
+<span class="nc" id="L64">        Long id = trainee.getUserId();</span>
 
-<span class="nc" id="L67">        traineeStorage.put(id, trainee);</span>
+<span class="nc" id="L66">        traineeStorage.put(id, trainee);</span>
 
-<span class="nc" id="L69">        LOGGER.debug(&quot;Updated trainee with id={}.&quot;, id);</span>
+<span class="nc" id="L68">        LOGGER.debug(&quot;Updated trainee with id={}.&quot;, id);</span>
 
-<span class="nc" id="L71">        return trainee;</span>
+<span class="nc" id="L70">        return trainee;</span>
     }
 
     @Override
     public boolean deleteById(Long id) {
-<span class="fc bfc" id="L76" title="All 2 branches covered.">        boolean deleted = traineeStorage.remove(id) != null;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        boolean deleted = traineeStorage.remove(id) != null;</span>
 
-<span class="fc" id="L78">        LOGGER.debug(&quot;Delete trainee with id={}: {}.&quot;, id, deleted);</span>
+<span class="fc" id="L77">        LOGGER.debug(&quot;Delete trainee with id={}: {}.&quot;, id, deleted);</span>
 
-<span class="fc" id="L80">        return deleted;</span>
+<span class="fc" id="L79">        return deleted;</span>
     }
 
     @Override
     public Optional&lt;Trainee&gt; findById(Long id) {
-<span class="fc" id="L85">        LOGGER.debug(&quot;Finding trainee by id={}.&quot;, id);</span>
+<span class="fc" id="L84">        LOGGER.debug(&quot;Finding trainee by id={}.&quot;, id);</span>
 
-<span class="fc" id="L87">        return Optional.ofNullable(traineeStorage.get(id));</span>
+<span class="fc" id="L86">        return Optional.ofNullable(traineeStorage.get(id));</span>
     }
 
     @Override
     public List&lt;Trainee&gt; findAll() {
-<span class="nc" id="L92">        LOGGER.debug(&quot;Finding all trainees. Count={}.&quot;, traineeStorage.size());</span>
+<span class="nc" id="L91">        LOGGER.debug(&quot;Finding all trainees. Count={}.&quot;, traineeStorage.size());</span>
 
-<span class="nc" id="L94">        return traineeStorage.values()</span>
-<span class="nc" id="L95">                .stream()</span>
-<span class="nc" id="L96">                .sorted(Comparator.comparing(Trainee::getUserId))</span>
-<span class="nc" id="L97">                .toList();</span>
+<span class="nc" id="L93">        return traineeStorage.values()</span>
+<span class="nc" id="L94">                .stream()</span>
+<span class="nc" id="L95">                .sorted(Comparator.comparing(Trainee::getUserId))</span>
+<span class="nc" id="L96">                .toList();</span>
     }
 
     @Override
     public Optional&lt;Trainee&gt; findByUsername(String username) {
-<span class="nc" id="L102">        LOGGER.debug(&quot;Finding trainee by username='{}'.&quot;, username);</span>
+<span class="nc" id="L101">        LOGGER.debug(&quot;Finding trainee by username='{}'.&quot;, username);</span>
 
-<span class="nc" id="L104">        return traineeStorage.values()</span>
-<span class="nc" id="L105">                .stream()</span>
-<span class="nc" id="L106">                .filter(trainee -&gt; username.equals(trainee.getUsername()))</span>
-<span class="nc" id="L107">                .findFirst();</span>
+<span class="nc" id="L103">        return traineeStorage.values()</span>
+<span class="nc" id="L104">                .stream()</span>
+<span class="nc" id="L105">                .filter(trainee -&gt; username.equals(trainee.getUsername()))</span>
+<span class="nc" id="L106">                .findFirst();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

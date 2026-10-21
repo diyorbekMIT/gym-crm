@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -14,68 +15,112 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-<span class="fc" id="L17">public class InMemoryTrainingDao implements TrainingDao {</span>
+<span class="fc" id="L18">public class InMemoryTrainingDao implements TrainingDao {</span>
 
-<span class="fc" id="L19">    private static final Logger LOGGER =</span>
-<span class="fc" id="L20">            LoggerFactory.getLogger(InMemoryTrainingDao.class);</span>
+<span class="fc" id="L20">    private static final Logger LOGGER =</span>
+<span class="fc" id="L21">            LoggerFactory.getLogger(InMemoryTrainingDao.class);</span>
 
     private Map&lt;Long, Training&gt; trainingStorage;
-<span class="fc" id="L23">    private final AtomicLong idSequence = new AtomicLong(0);</span>
+<span class="fc" id="L24">    private final AtomicLong idSequence = new AtomicLong(0);</span>
 
     @Autowired
     public void setTrainingStorage(
             @Qualifier(&quot;trainingStorage&quot;) Map&lt;Long, Training&gt; trainingStorage
     ) {
-<span class="fc" id="L29">        this.trainingStorage = trainingStorage;</span>
+<span class="fc" id="L30">        this.trainingStorage = trainingStorage;</span>
 
-<span class="fc" id="L31">        long highestExistingId = trainingStorage.keySet()</span>
-<span class="fc" id="L32">                .stream()</span>
-<span class="fc" id="L33">                .mapToLong(Long::longValue)</span>
-<span class="fc" id="L34">                .max()</span>
-<span class="fc" id="L35">                .orElse(0L);</span>
+<span class="fc" id="L32">        long highestExistingId = trainingStorage.keySet()</span>
+<span class="fc" id="L33">                .stream()</span>
+<span class="fc" id="L34">                .mapToLong(Long::longValue)</span>
+<span class="fc" id="L35">                .max()</span>
+<span class="fc" id="L36">                .orElse(0L);</span>
 
-<span class="fc" id="L37">        idSequence.set(highestExistingId);</span>
+<span class="fc" id="L38">        idSequence.set(highestExistingId);</span>
 
-<span class="fc" id="L39">        LOGGER.debug(</span>
+<span class="fc" id="L40">        LOGGER.debug(</span>
                 &quot;Training storage injected. Next generated training ID will be {}.&quot;,
-<span class="fc" id="L41">                highestExistingId + 1</span>
+<span class="fc" id="L42">                highestExistingId + 1</span>
         );
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L44">    }</span>
 
     @Override
     public Training save(Training training) {
-<span class="fc" id="L47">        Long id = training.getId();</span>
+<span class="fc" id="L48">        Long id = training.getId();</span>
 
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (id == null) {</span>
-<span class="fc" id="L50">            id = idSequence.incrementAndGet();</span>
-<span class="fc" id="L51">            training.setId(id);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (id == null) {</span>
+<span class="fc" id="L51">            id = idSequence.incrementAndGet();</span>
+<span class="fc" id="L52">            training.setId(id);</span>
         } else {
-<span class="nc" id="L53">            long providedId = id;</span>
-<span class="nc" id="L54">            idSequence.updateAndGet(current -&gt; Math.max(current, providedId));</span>
+<span class="nc" id="L54">            long providedId = id;</span>
+<span class="nc" id="L55">            idSequence.updateAndGet(current -&gt; Math.max(current, providedId));</span>
         }
 
-<span class="fc" id="L57">        trainingStorage.put(id, training);</span>
+<span class="fc" id="L58">        trainingStorage.put(id, training);</span>
 
-<span class="fc" id="L59">        LOGGER.debug(&quot;Saved training with id={}.&quot;, id);</span>
+<span class="fc" id="L60">        LOGGER.debug(&quot;Saved training with id={}.&quot;, id);</span>
 
-<span class="fc" id="L61">        return training;</span>
+<span class="fc" id="L62">        return training;</span>
     }
 
     @Override
     public Optional&lt;Training&gt; findById(Long id) {
-<span class="fc" id="L66">        LOGGER.debug(&quot;Finding training by id={}.&quot;, id);</span>
+<span class="fc" id="L67">        LOGGER.debug(&quot;Finding training by id={}.&quot;, id);</span>
 
-<span class="fc" id="L68">        return Optional.ofNullable(trainingStorage.get(id));</span>
+<span class="fc" id="L69">        return Optional.ofNullable(trainingStorage.get(id));</span>
     }
 
     @Override
     public List&lt;Training&gt; findAll() {
-<span class="fc" id="L73">        LOGGER.debug(&quot;Finding all trainings. Count={}.&quot;, trainingStorage.size());</span>
+<span class="fc" id="L74">        LOGGER.debug(&quot;Finding all trainings. Count={}.&quot;, trainingStorage.size());</span>
 
-<span class="fc" id="L75">        return trainingStorage.values()</span>
-<span class="fc" id="L76">                .stream()</span>
-<span class="fc" id="L77">                .sorted(Comparator.comparing(Training::getId))</span>
-<span class="fc" id="L78">                .toList();</span>
+<span class="fc" id="L76">        return trainingStorage.values()</span>
+<span class="fc" id="L77">                .stream()</span>
+<span class="fc" id="L78">                .sorted(Comparator.comparing(Training::getId))</span>
+<span class="fc" id="L79">                .toList();</span>
+    }
+
+    @Override
+    public List&lt;Training&gt; findForTrainee(
+            Long traineeId,
+            LocalDate fromDate,
+            LocalDate toDate,
+            String trainerName,
+            Long trainingTypeId
+    ) {
+<span class="nc" id="L90">        LOGGER.debug(&quot;Finding trainings for traineeId={}.&quot;, traineeId);</span>
+
+<span class="nc" id="L92">        return trainingStorage.values().stream()</span>
+<span class="nc" id="L93">                .filter(t -&gt; traineeId.equals(t.getTraineeId()))</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">                .filter(t -&gt; fromDate == null</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                        || !t.getTrainingDate().isBefore(fromDate))</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                .filter(t -&gt; toDate == null</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                        || !t.getTrainingDate().isAfter(toDate))</span>
+<span class="nc bnc" id="L98" title="All 4 branches missed.">                .filter(t -&gt; trainerName == null || trainerName.isBlank()</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">                        || trainerName.equals(String.valueOf(t.getTrainerId())))</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                .filter(t -&gt; trainingTypeId == null)</span>
+<span class="nc" id="L101">                .sorted(Comparator.comparing(Training::getTrainingDate))</span>
+<span class="nc" id="L102">                .toList();</span>
+    }
+
+    @Override
+    public List&lt;Training&gt; findForTrainer(
+            Long trainerId,
+            LocalDate fromDate,
+            LocalDate toDate,
+            String traineeName
+    ) {
+<span class="nc" id="L112">        LOGGER.debug(&quot;Finding trainings for trainerId={}.&quot;, trainerId);</span>
+
+<span class="nc" id="L114">        return trainingStorage.values().stream()</span>
+<span class="nc" id="L115">                .filter(t -&gt; trainerId.equals(t.getTrainerId()))</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">                .filter(t -&gt; fromDate == null</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                        || !t.getTrainingDate().isBefore(fromDate))</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                .filter(t -&gt; toDate == null</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                        || !t.getTrainingDate().isAfter(toDate))</span>
+<span class="nc bnc" id="L120" title="All 4 branches missed.">                .filter(t -&gt; traineeName == null || traineeName.isBlank()</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                        || traineeName.equals(String.valueOf(t.getTraineeId())))</span>
+<span class="nc" id="L122">                .sorted(Comparator.comparing(Training::getTrainingDate))</span>
+<span class="nc" id="L123">                .toList();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

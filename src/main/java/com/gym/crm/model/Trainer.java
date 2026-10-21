@@ -1,5 +1,7 @@
 package com.gym.crm.model;
 
+import com.gym.crm.entity.Trainee;
+
 import java.util.Objects;
 
 public class Trainer extends User {
@@ -76,4 +78,6 @@ public class Trainer extends User {
                 + ", specialization=" + specialization
                 + '}';
     }
+
+
 }

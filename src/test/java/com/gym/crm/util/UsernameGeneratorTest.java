@@ -19,14 +19,14 @@ class UsernameGeneratorTest {
 
     private TraineeDao traineeDao;
     private TrainerDao trainerDao;
-    private UsernameGenerator usernameGenerator;
+    private InMemoryUsernameGenerator usernameGenerator;
 
     @BeforeEach
     void setUp() {
         traineeDao = Mockito.mock(TraineeDao.class);
         trainerDao = Mockito.mock(TrainerDao.class);
 
-        usernameGenerator = new UsernameGenerator(traineeDao, trainerDao);
+        usernameGenerator = new InMemoryUsernameGenerator(traineeDao, trainerDao);
 
         when(traineeDao.findByUsername(anyString())).thenReturn(Optional.empty());
         when(trainerDao.findByUsername(anyString())).thenReturn(Optional.empty());

@@ -1,24 +1,48 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Gym CRM,com.gym.crm.dao.jpa,JpaTrainingTypeDao,0,47,0,0,0,16,0,5,0,5
+Gym CRM,com.gym.crm.dao.jpa,JpaTrainerDao,0,65,0,0,0,22,0,6,0,6
+Gym CRM,com.gym.crm.dao.jpa,JpaUserDao,0,26,0,2,0,7,0,3,0,2
+Gym CRM,com.gym.crm.dao.jpa,JpaTraineeDao,0,61,0,0,0,22,0,6,0,6
+Gym CRM,com.gym.crm.dao.jpa,JpaTrainingDao,0,178,3,11,0,48,3,13,0,9
+Gym CRM,com.gym.crm.config,PersistenceConfig,0,118,0,0,0,34,0,8,0,8
 Gym CRM,com.gym.crm.config,AppConfig,0,3,0,0,0,1,0,1,0,1
+Gym CRM,com.gym.crm.config,HibernateAppConfig,0,3,0,0,0,1,0,1,0,1
 Gym CRM,com.gym.crm.config,StorageConfig,0,19,0,0,0,5,0,5,0,5
 Gym CRM,com.gym.crm.service,TraineeServiceImpl,12,188,2,20,3,52,3,18,1,9
-Gym CRM,com.gym.crm.service,TrainerServiceImpl,12,168,3,19,3,47,4,16,1,8
 Gym CRM,com.gym.crm.service,TrainingServiceImpl,12,195,3,27,3,48,4,19,1,7
+Gym CRM,com.gym.crm.service,TrainerServiceImpl,12,168,3,19,3,47,4,16,1,8
 Gym CRM,com.gym.crm.service.exception,InvalidTrainingException,0,4,0,0,0,2,0,1,0,1
 Gym CRM,com.gym.crm.service.exception,EntityNotFoundException,0,4,0,0,0,2,0,1,0,1
+Gym CRM,com.gym.crm.service.exception,AuthenticationException,0,4,0,0,0,2,0,1,0,1
+Gym CRM,com.gym.crm.entity,TrainingType,6,9,0,0,1,4,1,3,1,3
+Gym CRM,com.gym.crm.entity,Training,11,48,0,0,1,21,1,14,1,14
+Gym CRM,com.gym.crm.entity,User,12,45,0,0,1,20,1,12,1,12
+Gym CRM,com.gym.crm.entity,Trainee,9,66,1,5,1,23,2,13,1,11
+Gym CRM,com.gym.crm.entity,Trainer,4,41,0,0,1,15,1,9,1,9
+Gym CRM,com.gym.crm.facade,JpaGymFacade,133,24,0,0,25,9,18,1,18,1
 Gym CRM,com.gym.crm.facade,GymFacade,0,69,0,0,0,18,0,13,0,13
 Gym CRM,com.gym.crm.dao,InMemoryTrainerDao,40,96,1,1,9,30,4,7,3,7
 Gym CRM,com.gym.crm.dao,InMemoryTraineeDao,62,91,1,3,16,26,6,7,5,6
-Gym CRM,com.gym.crm.dao,InMemoryTrainingDao,13,90,1,1,2,28,2,6,1,6
+Gym CRM,com.gym.crm.dao,InMemoryTrainingDao,156,90,31,1,25,28,28,6,12,6
+Gym CRM,com.gym.crm,HibernateGymCrmApplication,25,0,0,0,7,0,3,0,3,0
 Gym CRM,com.gym.crm,GymCrmApplication,194,0,0,0,52,0,8,0,8,0
 Gym CRM,com.gym.crm.storage,StorageInitializer.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
 Gym CRM,com.gym.crm.storage,StorageInitializer,28,225,6,12,11,58,6,15,0,11
 Gym CRM,com.gym.crm.storage,StorageInitializer.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
 Gym CRM,com.gym.crm.storage,StorageInitializer.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
-Gym CRM,com.gym.crm.model,Training,144,52,20,0,23,23,14,15,4,15
-Gym CRM,com.gym.crm.model,Trainer,88,17,12,0,19,8,10,5,4,5
-Gym CRM,com.gym.crm.model,Trainee,110,18,14,0,23,9,13,5,6,5
-Gym CRM,com.gym.crm.model,User,108,38,16,0,19,17,12,11,4,11
-Gym CRM,com.gym.crm.model,TrainingType,39,13,6,0,9,6,7,3,4,3
-Gym CRM,com.gym.crm.util,UsernameGenerator,0,71,1,11,0,18,1,9,0,4
+Gym CRM,com.gym.crm.model,User,78,68,16,0,18,18,11,12,3,12
+Gym CRM,com.gym.crm.model,Training,105,91,20,0,22,24,13,16,3,16
+Gym CRM,com.gym.crm.model,Trainer,68,37,12,0,18,9,9,6,3,6
+Gym CRM,com.gym.crm.model,Trainee,85,43,14,0,22,10,12,6,5,6
+Gym CRM,com.gym.crm.model,TrainingType,30,22,6,0,8,7,6,4,3,4
+Gym CRM,com.gym.crm.util,JpaUsernameGenerator,0,49,0,6,0,16,0,6,0,3
+Gym CRM,com.gym.crm.util,InMemoryUsernameGenerator,0,71,1,11,0,18,1,9,0,4
 Gym CRM,com.gym.crm.util,PasswordGenerator,0,35,0,2,0,7,0,3,0,2
+Gym CRM,com.gym.crm.service.jpa,TraineeDeletionService,0,49,0,2,0,14,0,4,0,3
+Gym CRM,com.gym.crm.service.jpa,AuthenticationService,0,72,2,8,0,21,2,8,0,5
+Gym CRM,com.gym.crm.service.jpa,TrainingManagementService,20,144,8,10,4,35,8,7,0,6
+Gym CRM,com.gym.crm.service.jpa,ProfileRegistrationService,0,142,1,3,0,41,1,7,0,6
+Gym CRM,com.gym.crm.service.jpa,TrainerAssignmentService,5,147,2,12,1,35,2,11,0,6
+Gym CRM,com.gym.crm.service.jpa,ProfileManagementService,58,154,9,7,15,39,10,9,2,9
+Gym CRM,com.gym.crm.service.jpa,TrainingQueryService,5,69,3,7,1,17,3,6,0,4
+Gym CRM,com.gym.crm.service.jpa,ProfileAccountService,0,71,1,3,0,22,1,8,0,7

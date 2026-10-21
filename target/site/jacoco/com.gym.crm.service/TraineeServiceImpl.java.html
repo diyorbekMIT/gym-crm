@@ -8,6 +8,7 @@ import com.gym.crm.util.UsernameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +16,8 @@ import java.util.List;
 @Service
 public class TraineeServiceImpl implements TraineeService {
 
-<span class="fc" id="L18">    private static final Logger LOGGER =</span>
-<span class="fc" id="L19">            LoggerFactory.getLogger(TraineeServiceImpl.class);</span>
+<span class="fc" id="L19">    private static final Logger LOGGER =</span>
+<span class="fc" id="L20">            LoggerFactory.getLogger(TraineeServiceImpl.class);</span>
 
     private final TraineeDao traineeDao;
     private final UsernameGenerator usernameGenerator;
@@ -25,92 +26,92 @@ public class TraineeServiceImpl implements TraineeService {
     @Autowired
     public TraineeServiceImpl(
             TraineeDao traineeDao,
-            UsernameGenerator usernameGenerator,
+            @Qualifier(&quot;inMemoryUsernameGenerator&quot;) UsernameGenerator usernameGenerator,
             PasswordGenerator passwordGenerator
-<span class="fc" id="L30">    ) {</span>
-<span class="fc" id="L31">        this.traineeDao = traineeDao;</span>
-<span class="fc" id="L32">        this.usernameGenerator = usernameGenerator;</span>
-<span class="fc" id="L33">        this.passwordGenerator = passwordGenerator;</span>
-<span class="fc" id="L34">    }</span>
+<span class="fc" id="L31">    ) {</span>
+<span class="fc" id="L32">        this.traineeDao = traineeDao;</span>
+<span class="fc" id="L33">        this.usernameGenerator = usernameGenerator;</span>
+<span class="fc" id="L34">        this.passwordGenerator = passwordGenerator;</span>
+<span class="fc" id="L35">    }</span>
 
     @Override
     public Trainee create(Trainee trainee) {
-<span class="fc" id="L38">        validateTraineeForCreation(trainee);</span>
+<span class="fc" id="L39">        validateTraineeForCreation(trainee);</span>
 
-<span class="fc" id="L40">        trainee.setUsername(</span>
-<span class="fc" id="L41">                usernameGenerator.generateUsername(</span>
-<span class="fc" id="L42">                        trainee.getFirstName(),</span>
-<span class="fc" id="L43">                        trainee.getLastName()</span>
+<span class="fc" id="L41">        trainee.setUsername(</span>
+<span class="fc" id="L42">                usernameGenerator.generateUsername(</span>
+<span class="fc" id="L43">                        trainee.getFirstName(),</span>
+<span class="fc" id="L44">                        trainee.getLastName()</span>
                 )
         );
 
-<span class="fc" id="L47">        trainee.setPassword(passwordGenerator.generatePassword());</span>
-<span class="fc" id="L48">        trainee.setActive(true);</span>
+<span class="fc" id="L48">        trainee.setPassword(passwordGenerator.generatePassword());</span>
+<span class="fc" id="L49">        trainee.setActive(true);</span>
 
-<span class="fc" id="L50">        Trainee savedTrainee = traineeDao.save(trainee);</span>
+<span class="fc" id="L51">        Trainee savedTrainee = traineeDao.save(trainee);</span>
 
-<span class="fc" id="L52">        LOGGER.info(</span>
+<span class="fc" id="L53">        LOGGER.info(</span>
                 &quot;Created trainee: id={}, username='{}'.&quot;,
-<span class="fc" id="L54">                savedTrainee.getUserId(),</span>
-<span class="fc" id="L55">                savedTrainee.getUsername()</span>
+<span class="fc" id="L55">                savedTrainee.getUserId(),</span>
+<span class="fc" id="L56">                savedTrainee.getUsername()</span>
         );
 
-<span class="fc" id="L58">        return savedTrainee;</span>
+<span class="fc" id="L59">        return savedTrainee;</span>
     }
 
     @Override
     public Trainee update(Trainee trainee) {
-<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (trainee == null || trainee.getUserId() == null) {</span>
-<span class="fc" id="L64">            throw new IllegalArgumentException(</span>
+<span class="fc bfc" id="L64" title="All 4 branches covered.">        if (trainee == null || trainee.getUserId() == null) {</span>
+<span class="fc" id="L65">            throw new IllegalArgumentException(</span>
                     &quot;Trainee and trainee ID must not be null for update.&quot;
             );
         }
 
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (traineeDao.findById(trainee.getUserId()).isEmpty()) {</span>
-<span class="fc" id="L70">            LOGGER.warn(&quot;Cannot update trainee. id={} was not found.&quot;, trainee.getUserId());</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (traineeDao.findById(trainee.getUserId()).isEmpty()) {</span>
+<span class="fc" id="L71">            LOGGER.warn(&quot;Cannot update trainee. id={} was not found.&quot;, trainee.getUserId());</span>
 
-<span class="fc" id="L72">            throw new EntityNotFoundException(</span>
-<span class="fc" id="L73">                    &quot;Trainee with id=&quot; + trainee.getUserId() + &quot; was not found.&quot;</span>
+<span class="fc" id="L73">            throw new EntityNotFoundException(</span>
+<span class="fc" id="L74">                    &quot;Trainee with id=&quot; + trainee.getUserId() + &quot; was not found.&quot;</span>
             );
         }
 
-<span class="fc" id="L77">        Trainee updatedTrainee = traineeDao.update(trainee);</span>
+<span class="fc" id="L78">        Trainee updatedTrainee = traineeDao.update(trainee);</span>
 
-<span class="fc" id="L79">        LOGGER.info(</span>
+<span class="fc" id="L80">        LOGGER.info(</span>
                 &quot;Updated trainee: id={}, username='{}'.&quot;,
-<span class="fc" id="L81">                updatedTrainee.getUserId(),</span>
-<span class="fc" id="L82">                updatedTrainee.getUsername()</span>
+<span class="fc" id="L82">                updatedTrainee.getUserId(),</span>
+<span class="fc" id="L83">                updatedTrainee.getUsername()</span>
         );
 
-<span class="fc" id="L85">        return updatedTrainee;</span>
+<span class="fc" id="L86">        return updatedTrainee;</span>
     }
 
     @Override
     public void deleteById(Long id) {
-<span class="fc" id="L90">        validateId(id, &quot;Trainee&quot;);</span>
+<span class="fc" id="L91">        validateId(id, &quot;Trainee&quot;);</span>
 
-<span class="fc" id="L92">        boolean deleted = traineeDao.deleteById(id);</span>
+<span class="fc" id="L93">        boolean deleted = traineeDao.deleteById(id);</span>
 
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (!deleted) {</span>
-<span class="fc" id="L95">            LOGGER.warn(&quot;Cannot delete trainee. id={} was not found.&quot;, id);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (!deleted) {</span>
+<span class="fc" id="L96">            LOGGER.warn(&quot;Cannot delete trainee. id={} was not found.&quot;, id);</span>
 
-<span class="fc" id="L97">            throw new EntityNotFoundException(</span>
+<span class="fc" id="L98">            throw new EntityNotFoundException(</span>
                     &quot;Trainee with id=&quot; + id + &quot; was not found.&quot;
             );
         }
 
-<span class="fc" id="L102">        LOGGER.info(&quot;Deleted trainee with id={}.&quot;, id);</span>
-<span class="fc" id="L103">    }</span>
+<span class="fc" id="L103">        LOGGER.info(&quot;Deleted trainee with id={}.&quot;, id);</span>
+<span class="fc" id="L104">    }</span>
 
     @Override
     public Trainee findById(Long id) {
-<span class="fc" id="L107">        validateId(id, &quot;Trainee&quot;);</span>
+<span class="fc" id="L108">        validateId(id, &quot;Trainee&quot;);</span>
 
-<span class="fc" id="L109">        return traineeDao.findById(id)</span>
-<span class="fc" id="L110">                .orElseThrow(() -&gt; {</span>
-<span class="fc" id="L111">                    LOGGER.warn(&quot;Trainee with id={} was not found.&quot;, id);</span>
+<span class="fc" id="L110">        return traineeDao.findById(id)</span>
+<span class="fc" id="L111">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L112">                    LOGGER.warn(&quot;Trainee with id={} was not found.&quot;, id);</span>
 
-<span class="fc" id="L113">                    return new EntityNotFoundException(</span>
+<span class="fc" id="L114">                    return new EntityNotFoundException(</span>
                             &quot;Trainee with id=&quot; + id + &quot; was not found.&quot;
                     );
                 });
@@ -118,33 +119,33 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public List&lt;Trainee&gt; findAll() {
-<span class="nc" id="L121">        List&lt;Trainee&gt; trainees = traineeDao.findAll();</span>
+<span class="nc" id="L122">        List&lt;Trainee&gt; trainees = traineeDao.findAll();</span>
 
-<span class="nc" id="L123">        LOGGER.info(&quot;Selected {} trainee(s).&quot;, trainees.size());</span>
+<span class="nc" id="L124">        LOGGER.info(&quot;Selected {} trainee(s).&quot;, trainees.size());</span>
 
-<span class="nc" id="L125">        return trainees;</span>
+<span class="nc" id="L126">        return trainees;</span>
     }
 
     private void validateTraineeForCreation(Trainee trainee) {
-<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (trainee == null) {</span>
-<span class="fc" id="L130">            throw new IllegalArgumentException(&quot;Trainee must not be null.&quot;);</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (trainee == null) {</span>
+<span class="fc" id="L131">            throw new IllegalArgumentException(&quot;Trainee must not be null.&quot;);</span>
         }
 
-<span class="pc bpc" id="L133" title="1 of 4 branches missed.">        if (trainee.getFirstName() == null || trainee.getFirstName().isBlank()) {</span>
-<span class="fc" id="L134">            throw new IllegalArgumentException(&quot;Trainee first name must not be blank.&quot;);</span>
+<span class="pc bpc" id="L134" title="1 of 4 branches missed.">        if (trainee.getFirstName() == null || trainee.getFirstName().isBlank()) {</span>
+<span class="fc" id="L135">            throw new IllegalArgumentException(&quot;Trainee first name must not be blank.&quot;);</span>
         }
 
-<span class="pc bpc" id="L137" title="1 of 4 branches missed.">        if (trainee.getLastName() == null || trainee.getLastName().isBlank()) {</span>
-<span class="fc" id="L138">            throw new IllegalArgumentException(&quot;Trainee last name must not be blank.&quot;);</span>
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">        if (trainee.getLastName() == null || trainee.getLastName().isBlank()) {</span>
+<span class="fc" id="L139">            throw new IllegalArgumentException(&quot;Trainee last name must not be blank.&quot;);</span>
         }
-<span class="fc" id="L140">    }</span>
+<span class="fc" id="L141">    }</span>
 
     private void validateId(Long id, String entityName) {
-<span class="fc bfc" id="L143" title="All 4 branches covered.">        if (id == null || id &lt;= 0) {</span>
-<span class="fc" id="L144">            throw new IllegalArgumentException(</span>
+<span class="fc bfc" id="L144" title="All 4 branches covered.">        if (id == null || id &lt;= 0) {</span>
+<span class="fc" id="L145">            throw new IllegalArgumentException(</span>
                     entityName + &quot; ID must be a positive number.&quot;
             );
         }
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L149">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
