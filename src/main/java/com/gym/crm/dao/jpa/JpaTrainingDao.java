@@ -57,7 +57,8 @@ public class JpaTrainingDao implements TrainingDao {
                         Training.class
                 )
                 .setParameter("id", id)
-                .getResultStream()
+                .getResultList()
+                .stream()
                 .findFirst();
     }
 

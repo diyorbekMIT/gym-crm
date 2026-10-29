@@ -43,7 +43,8 @@ public class JpaTraineeDao implements TraineeDao {
                         Trainee.class
                 )
                 .setParameter("id", id)
-                .getResultStream()
+                .getResultList()
+                .stream()
                 .findFirst();
     }
 
@@ -53,15 +54,19 @@ public class JpaTraineeDao implements TraineeDao {
 
         return entityManager.createQuery(
                         """
-                        SELECT trainee
+                        SELECT DISTINCT trainee
                         FROM Trainee trainee
                         JOIN FETCH trainee.user user
-                        WHERE user.username = :username
+                        LEFT JOIN FETCH trainee.trainers trainers
+                        LEFT JOIN FETCH trainers.user
+                        LEFT JOIN FETCH trainers.specialization
+                        WHERE LOWER(user.username) = LOWER(:username)
                         """,
                         Trainee.class
                 )
                 .setParameter("username", username)
-                .getResultStream()
+                .getResultList()
+                .stream()
                 .findFirst();
     }
 

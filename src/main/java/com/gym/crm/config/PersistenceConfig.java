@@ -123,6 +123,8 @@ public class PersistenceConfig {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+    
+
     @Bean
     @DependsOn("entityManagerFactory")
     public InitializingBean trainingTypeInitializer(DataSource dataSource) {
@@ -137,4 +139,6 @@ public class PersistenceConfig {
             populator.execute(dataSource);
         };
     }
+
+
 }

@@ -14,6 +14,7 @@ import com.gym.crm.service.jpa.TrainerAssignmentService;
 import com.gym.crm.service.jpa.TraineeDeletionService;
 import com.gym.crm.service.jpa.TrainingManagementService;
 import com.gym.crm.service.jpa.TrainingQueryService;
+import com.gym.crm.service.jpa.TrainingTypeService;
 import com.gym.crm.util.JpaUsernameGenerator;
 import com.gym.crm.util.PasswordGenerator;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +41,7 @@ import org.springframework.context.annotation.Import;
         TrainingQueryService.class,
         TrainerAssignmentService.class,
         TraineeDeletionService.class,
+        TrainingTypeService.class,
 
         JpaGymFacade.class
 })

@@ -2,6 +2,8 @@
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/config/PostgresConnectionTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/config/PropertyLoadingTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/config/StorageConfigTest.java
+/Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/controller/TraineeControllerTest.java
+/Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/controller/TraineeRegistrationIntegrationTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/dao/InMemoryTraineeDaoTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/dao/InMemoryTrainerDaoTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/dao/InMemoryTrainingDaoTest.java
@@ -12,7 +14,6 @@
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/dao/jpa/UserDaoIntegrationTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/entity/TraineeTrainerTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/entity/UserPersistenceTest.java
-/Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/facade/GymFacadeTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/service/TraineeServiceImplTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/service/TrainerServiceImplTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/service/TrainingServiceImplTest.java
@@ -27,7 +28,6 @@
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/service/jpa/TrainerAssignmentServiceTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/service/jpa/TrainingManagementServiceTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/service/jpa/TrainingQueryServiceTest.java
-/Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/storage/StorageInitializerIntegrationTest.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/util/JpaUsernameGenerator.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/util/PasswordGenerator.java
 /Users/macos/Desktop/GYM-CRM/src/test/java/com/gym/crm/util/UsernameGeneratorTest.java

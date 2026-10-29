@@ -43,7 +43,8 @@ public class JpaTrainingTypeDao implements TrainingTypeDao {
                         TrainingType.class
                 )
                 .setParameter("name", name)
-                .getResultStream()
+                .getResultList()
+                .stream()
                 .findFirst();
     }
 
@@ -60,5 +61,27 @@ public class JpaTrainingTypeDao implements TrainingTypeDao {
                         TrainingType.class
                 )
                 .getResultList();
+    }
+
+    @Override
+    public TrainingType save(TrainingType trainingType) {
+        LOGGER.debug(
+                "Saving training type name='{}'.",
+                trainingType.getTrainingTypeName()
+        );
+
+        if (trainingType.getId() == null) {
+            entityManager.persist(trainingType);
+
+            LOGGER.info(
+                    "Created training type id={} name='{}'.",
+                    trainingType.getId(),
+                    trainingType.getTrainingTypeName()
+            );
+
+            return trainingType;
+        }
+
+        return entityManager.merge(trainingType);
     }
 }
