@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: gym-crm
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - prometheus
+
+  endpoint:
+    health:
+      show-details: always
+
+  health:
+    defaults:
+      enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}

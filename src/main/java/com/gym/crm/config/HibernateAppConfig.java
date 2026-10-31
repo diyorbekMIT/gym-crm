@@ -15,8 +15,13 @@ import com.gym.crm.service.jpa.TraineeDeletionService;
 import com.gym.crm.service.jpa.TrainingManagementService;
 import com.gym.crm.service.jpa.TrainingQueryService;
 import com.gym.crm.service.jpa.TrainingTypeService;
+import com.gym.crm.metrics.GymMetricsService;
 import com.gym.crm.util.JpaUsernameGenerator;
 import com.gym.crm.util.PasswordGenerator;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -43,7 +48,14 @@ import org.springframework.context.annotation.Import;
         TraineeDeletionService.class,
         TrainingTypeService.class,
 
+        GymMetricsService.class,
         JpaGymFacade.class
 })
 public class HibernateAppConfig {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MeterRegistry meterRegistry() {
+        return new SimpleMeterRegistry();
+    }
 }

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://staging-db-host:5432/gym_crm_stg
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: INFO
+    com.gym.crm: INFO
+    org.hibernate.SQL: WARN

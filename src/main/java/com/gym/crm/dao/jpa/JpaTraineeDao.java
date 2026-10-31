@@ -79,4 +79,15 @@ public class JpaTraineeDao implements TraineeDao {
                 trainee.getId()
         );
     }
+
+    @Override
+    public long count() {
+        Long result = entityManager.createQuery(
+                "SELECT COUNT(t) FROM Trainee t", Long.class
+        ).getSingleResult();
+
+        LOGGER.debug("Trainee count={}.", result);
+
+        return result;
+    }
 }

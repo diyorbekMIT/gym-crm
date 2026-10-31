@@ -7,6 +7,7 @@ import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
 import com.gym.crm.entity.Training;
 import com.gym.crm.entity.TrainingType;
+import com.gym.crm.metrics.GymMetricsService;
 import com.gym.crm.service.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +26,19 @@ public class TrainingManagementService {
     private final TrainerDao trainerDao;
     private final TrainingTypeDao trainingTypeDao;
     private final TrainingDao trainingDao;
+    private final GymMetricsService gymMetricsService;
 
     public TrainingManagementService(
             AuthenticationService authenticationService,
             TrainerDao trainerDao,
             TrainingTypeDao trainingTypeDao,
-            TrainingDao trainingDao
+            TrainingDao trainingDao, GymMetricsService gymMetricsService
     ) {
         this.authenticationService = authenticationService;
         this.trainerDao = trainerDao;
         this.trainingTypeDao = trainingTypeDao;
         this.trainingDao = trainingDao;
+        this.gymMetricsService = gymMetricsService;
     }
 
     @Transactional
@@ -83,6 +86,7 @@ public class TrainingManagementService {
         training.setTrainingDuration(durationMinutes);
 
         Training savedTraining = trainingDao.save(training);
+        gymMetricsService.incrementTrainingCreations();
 
         LOGGER.info(
                 "Added training: id={}, traineeId={}, trainerId={}.",

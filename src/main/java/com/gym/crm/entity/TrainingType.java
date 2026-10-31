@@ -22,7 +22,7 @@ public class TrainingType {
     )
     private String trainingTypeName;
 
-    protected TrainingType() {
+    public TrainingType() {
     }
 
     public Long getId() {
