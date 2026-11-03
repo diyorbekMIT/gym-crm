@@ -7,6 +7,7 @@ import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
 import com.gym.crm.entity.Training;
 import com.gym.crm.entity.TrainingType;
+import com.gym.crm.metrics.GymMetricsService;
 import com.gym.crm.service.exception.AuthenticationException;
 import com.gym.crm.service.exception.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +33,7 @@ class TrainingManagementServiceTest {
     private TrainerDao trainerDao;
     private TrainingTypeDao trainingTypeDao;
     private TrainingDao trainingDao;
+    private GymMetricsService gymMetricsService;
 
     private TrainingManagementService trainingService;
 
@@ -40,12 +43,14 @@ class TrainingManagementServiceTest {
         trainerDao = mock(TrainerDao.class);
         trainingTypeDao = mock(TrainingTypeDao.class);
         trainingDao = mock(TrainingDao.class);
+        gymMetricsService = mock(GymMetricsService.class);
 
         trainingService = new TrainingManagementService(
                 authenticationService,
                 trainerDao,
                 trainingTypeDao,
-                trainingDao
+                trainingDao,
+                gymMetricsService
         );
     }
 
@@ -82,6 +87,8 @@ class TrainingManagementServiceTest {
                 .isEqualTo(TRAINING_DATE);
 
         assertThat(result.getTrainingDuration()).isEqualTo(45);
+
+        verify(gymMetricsService).incrementTrainingCreations();
     }
 
     @Test
@@ -97,7 +104,8 @@ class TrainingManagementServiceTest {
         verifyNoInteractions(
                 trainerDao,
                 trainingTypeDao,
-                trainingDao
+                trainingDao,
+                gymMetricsService
         );
     }
 
@@ -117,7 +125,8 @@ class TrainingManagementServiceTest {
         verifyNoInteractions(
                 trainerDao,
                 trainingTypeDao,
-                trainingDao
+                trainingDao,
+                gymMetricsService
         );
     }
 
@@ -135,7 +144,7 @@ class TrainingManagementServiceTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Trainer with id=2 was not found.");
 
-        verifyNoInteractions(trainingTypeDao, trainingDao);
+        verifyNoInteractions(trainingTypeDao, trainingDao, gymMetricsService);
     }
 
     @Test
@@ -155,7 +164,7 @@ class TrainingManagementServiceTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Training type with id=3 was not found.");
 
-        verifyNoInteractions(trainingDao);
+        verifyNoInteractions(trainingDao, gymMetricsService);
     }
 
     private Training addTraining(Integer durationMinutes) {

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gym_crm_local
+    username: gym_user
+    password: gym_password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    root: INFO
+    com.gym.crm: DEBUG
+    org.hibernate.SQL: DEBUG

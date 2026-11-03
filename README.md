@@ -143,6 +143,68 @@ The application starts on:
 http://localhost:8080
 ```
 
+## Docker & Containerization
+
+### 1. Build the Docker Image
+To build the application image using the multi-stage `Dockerfile`:
+
+```bash
+docker build -t gym-crm:1.0 .
+```
+
+### 2. Run with Docker Compose
+The stack runs the Gym CRM application and a dedicated PostgreSQL database in isolated containers connected through a bridge network. Credentials and configuration are passed at runtime via environment variables.
+
+```bash
+# Start PostgreSQL and Gym CRM in detached mode
+docker compose up -d
+
+# Check container status (both should report healthy/running)
+docker compose ps
+```
+
+### 3. Verify Health & Actuator
+Check the application status using the Spring Boot Actuator endpoint:
+
+```bash
+curl -i http://localhost:8080/actuator/health
+```
+
+Expected response (`HTTP 200 OK`):
+```json
+{
+  "status": "UP",
+  "components": {
+    "db": { "status": "UP" },
+    "trainingType": { "status": "UP" }
+  }
+}
+```
+
+### 4. Inspect Logs & Shell Diagnostics
+```bash
+# View application logs written to standard output
+docker logs -f gym-crm-app
+
+# Start a diagnostic shell inside the container (runs as non-root user 'gym')
+docker exec -it gym-crm-app sh
+```
+
+### 5. Stop and Restart Demonstration
+```bash
+# Stop only the application container
+docker compose stop app
+
+# Restart the application container and verify reconnection to database
+docker compose start app
+
+# Check startup logs
+docker logs --tail 30 gym-crm-app
+
+# Stop and remove all containers and networks
+docker compose down
+```
+
 ## Example: register trainee
 
 ```bash

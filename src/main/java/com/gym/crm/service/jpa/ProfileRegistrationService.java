@@ -7,6 +7,7 @@ import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
 import com.gym.crm.entity.TrainingType;
 import com.gym.crm.entity.User;
+import com.gym.crm.metrics.GymMetricsService;
 import com.gym.crm.service.exception.EntityNotFoundException;
 import com.gym.crm.util.UsernameGenerator;
 import com.gym.crm.util.PasswordGenerator;
@@ -29,19 +30,22 @@ public class ProfileRegistrationService {
     private final TrainingTypeDao trainingTypeDao;
     private final UsernameGenerator usernameGenerator;
     private final PasswordGenerator passwordGenerator;
+    private final GymMetricsService metricsService;
 
     public ProfileRegistrationService(
             TraineeDao traineeDao,
             TrainerDao trainerDao,
             TrainingTypeDao trainingTypeDao,
             @Qualifier("jpaUsernameGenerator") UsernameGenerator usernameGenerator,
-            PasswordGenerator passwordGenerator
+            PasswordGenerator passwordGenerator,
+            GymMetricsService metricsService
     ) {
         this.traineeDao = traineeDao;
         this.trainerDao = trainerDao;
         this.trainingTypeDao = trainingTypeDao;
         this.usernameGenerator = usernameGenerator;
         this.passwordGenerator = passwordGenerator;
+        this.metricsService = metricsService;
     }
 
     @Transactional
@@ -65,6 +69,7 @@ public class ProfileRegistrationService {
                 savedTrainee.getId(),
                 user.getUsername()
         );
+        metricsService.incrementTraineeRegistrations();
 
         return savedTrainee;
     }
@@ -102,6 +107,8 @@ public class ProfileRegistrationService {
                 savedTrainer.getId(),
                 user.getUsername()
         );
+
+        metricsService.incrementTrainerRegistrations();
 
         return savedTrainer;
     }

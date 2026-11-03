@@ -13,4 +13,6 @@ public interface TraineeDao {
     Optional<Trainee> findByUsername(String username);
 
     void delete(Trainee trainee);
+
+    long count();
 }

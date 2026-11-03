@@ -53,6 +53,7 @@ class HibernateAppConfigTest {
         assertThat(applicationContext.getBean(TrainerAssignmentService.class)).isNotNull();
         assertThat(applicationContext.getBean(TraineeDeletionService.class)).isNotNull();
 
+        assertThat(applicationContext.getBean(com.gym.crm.metrics.GymMetricsService.class)).isNotNull();
         assertThat(applicationContext.getBean(JpaGymFacade.class)).isNotNull();
     }
 }

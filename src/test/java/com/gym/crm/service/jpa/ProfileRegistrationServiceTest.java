@@ -9,6 +9,7 @@ import com.gym.crm.entity.TrainingType;
 import com.gym.crm.service.exception.EntityNotFoundException;
 import com.gym.crm.util.UsernameGenerator;
 import com.gym.crm.util.PasswordGenerator;
+import com.gym.crm.metrics.GymMetricsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +31,7 @@ class ProfileRegistrationServiceTest {
     private TrainingTypeDao trainingTypeDao;
     private UsernameGenerator usernameGenerator;
     private PasswordGenerator passwordGenerator;
+    private GymMetricsService metricsService;
 
     private ProfileRegistrationService registrationService;
 
@@ -39,13 +42,15 @@ class ProfileRegistrationServiceTest {
         trainingTypeDao = mock(TrainingTypeDao.class);
         usernameGenerator = mock(UsernameGenerator.class);
         passwordGenerator = mock(PasswordGenerator.class);
+        metricsService = mock(GymMetricsService.class);
 
         registrationService = new ProfileRegistrationService(
                 traineeDao,
                 trainerDao,
                 trainingTypeDao,
                 usernameGenerator,
-                passwordGenerator
+                passwordGenerator,
+                metricsService
         );
     }
 
@@ -79,6 +84,8 @@ class ProfileRegistrationServiceTest {
                 .isEqualTo(LocalDate.of(2000, 5, 15));
 
         assertThat(trainee.getAddress()).isEqualTo("Tashkent");
+
+        verify(metricsService).incrementTraineeRegistrations();
     }
 
     @Test
@@ -113,6 +120,8 @@ class ProfileRegistrationServiceTest {
                 .isEqualTo("FakePass12");
 
         assertThat(trainer.getUser().getActive()).isTrue();
+
+        verify(metricsService).incrementTrainerRegistrations();
     }
 
     @Test
@@ -133,7 +142,8 @@ class ProfileRegistrationServiceTest {
                 trainingTypeDao,
                 trainerDao,
                 usernameGenerator,
-                passwordGenerator
+                passwordGenerator,
+                metricsService
         );
     }
 
@@ -157,7 +167,8 @@ class ProfileRegistrationServiceTest {
         verifyNoInteractions(
                 trainerDao,
                 usernameGenerator,
-                passwordGenerator
+                passwordGenerator,
+                metricsService
         );
     }
 
@@ -179,6 +190,6 @@ class ProfileRegistrationServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("First name must not be blank.");
 
-        verifyNoInteractions(traineeDao, passwordGenerator);
+        verifyNoInteractions(traineeDao, passwordGenerator, metricsService);
     }
 }

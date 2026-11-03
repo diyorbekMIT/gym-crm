@@ -1,15 +1,9 @@
 package com.gym.crm.service.jpa;
 
-import com.gym.crm.config.PersistenceConfig;
-import com.gym.crm.dao.jpa.JpaTraineeDao;
-import com.gym.crm.dao.jpa.JpaTrainerDao;
-import com.gym.crm.dao.jpa.JpaTrainingTypeDao;
-import com.gym.crm.dao.jpa.JpaUserDao;
+import com.gym.crm.config.HibernateAppConfig;
 import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
 import com.gym.crm.entity.TrainingType;
-import com.gym.crm.util.JpaUsernameGenerator;
-import com.gym.crm.util.PasswordGenerator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
@@ -22,16 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringJUnitConfig(classes = {
-        PersistenceConfig.class,
-        ProfileRegistrationService.class,
-        JpaTraineeDao.class,
-        JpaTrainerDao.class,
-        JpaTrainingTypeDao.class,
-        JpaUserDao.class,
-        JpaUsernameGenerator.class,
-        PasswordGenerator.class
-})
+@SpringJUnitConfig(HibernateAppConfig.class)
 @Transactional
 class ProfileRegistrationIntegrationTest {
 
