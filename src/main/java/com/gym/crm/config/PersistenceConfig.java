@@ -47,21 +47,30 @@ public class PersistenceConfig {
         DriverManagerDataSource dataSource =
                 new DriverManagerDataSource();
 
-        dataSource.setDriverClassName(
-                environment.getRequiredProperty("db.driver")
+        String driver = environment.getProperty(
+                "spring.datasource.driver-class-name",
+                environment.getProperty("db.driver", "org.postgresql.Driver")
         );
 
-        dataSource.setUrl(
-                environment.getRequiredProperty("db.url")
+        String url = environment.getProperty(
+                "spring.datasource.url",
+                environment.getProperty("db.url", "jdbc:postgresql://localhost:5432/gym_crm")
         );
 
-        dataSource.setUsername(
-                environment.getRequiredProperty("db.username")
+        String username = environment.getProperty(
+                "spring.datasource.username",
+                environment.getProperty("db.username", "gym_crm_user")
         );
 
-        dataSource.setPassword(
-                environment.getRequiredProperty("db.password")
+        String password = environment.getProperty(
+                "spring.datasource.password",
+                environment.getProperty("db.password", "")
         );
+
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
 
         return dataSource;
     }
@@ -82,6 +91,14 @@ public class PersistenceConfig {
         );
 
         Properties properties = new Properties();
+
+        properties.setProperty(
+                "hibernate.dialect",
+                environment.getProperty(
+                        "hibernate.dialect",
+                        "org.hibernate.dialect.PostgreSQLDialect"
+                )
+        );
 
         properties.setProperty(
                 "hibernate.hbm2ddl.auto",
