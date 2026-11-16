@@ -13,3 +13,4 @@ class GymCrmApplicationTest {
         assertThat(true).isTrue();
     }
 }
+
