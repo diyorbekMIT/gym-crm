@@ -2,8 +2,10 @@ package com.gym.crm.service.jpa;
 
 import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
+import jakarta.validation.constraints.Past;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +16,14 @@ public class ProfileAccountService {
             LoggerFactory.getLogger(ProfileAccountService.class);
 
     private final AuthenticationService authenticationService;
+    private final PasswordEncoder passwordEncoder;
 
     public ProfileAccountService(
-            AuthenticationService authenticationService
+            AuthenticationService authenticationService,
+            PasswordEncoder passwordEncoder
     ) {
         this.authenticationService = authenticationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +61,7 @@ public class ProfileAccountService {
 
         validateNewPassword(newPassword);
 
-        trainee.getUser().setPassword(newPassword);
+        trainee.getUser().setPassword(passwordEncoder.encode(newPassword));
 
         LOGGER.info(
                 "Changed password for trainee id={}.",
@@ -77,7 +82,7 @@ public class ProfileAccountService {
 
         validateNewPassword(newPassword);
 
-        trainer.getUser().setPassword(newPassword);
+        trainer.getUser().setPassword(passwordEncoder.encode(newPassword));
 
         LOGGER.info(
                 "Changed password for trainer id={}.",

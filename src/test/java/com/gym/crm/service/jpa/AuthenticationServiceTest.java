@@ -8,6 +8,8 @@ import com.gym.crm.entity.User;
 import com.gym.crm.service.exception.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -21,16 +23,19 @@ class AuthenticationServiceTest {
 
     private TraineeDao traineeDao;
     private TrainerDao trainerDao;
+    private PasswordEncoder passwordEncoder;
     private AuthenticationService authenticationService;
 
     @BeforeEach
     void setUp() {
         traineeDao = mock(TraineeDao.class);
         trainerDao = mock(TrainerDao.class);
+        passwordEncoder = new BCryptPasswordEncoder();
 
         authenticationService = new AuthenticationService(
                 traineeDao,
-                trainerDao
+                trainerDao,
+                passwordEncoder
         );
     }
 
@@ -126,7 +131,7 @@ class AuthenticationServiceTest {
     private User newUser(String username, String password) {
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setActive(true);
 
         return user;

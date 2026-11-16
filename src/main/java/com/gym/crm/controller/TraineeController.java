@@ -265,7 +265,7 @@ public class TraineeController {
 
         RegistrationResponse response = new RegistrationResponse(
                 trainee.getUser().getUsername(),
-                trainee.getUser().getPassword()
+                trainee.getUser().getPlainPassword()
         );
 
         LOGGER.info(

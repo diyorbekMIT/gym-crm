@@ -6,6 +6,8 @@ import com.gym.crm.entity.User;
 import com.gym.crm.service.exception.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,14 +17,17 @@ import static org.mockito.Mockito.when;
 class ProfileAccountServiceTest {
 
     private AuthenticationService authenticationService;
+    private PasswordEncoder passwordEncoder;
     private ProfileAccountService accountService;
 
     @BeforeEach
     void setUp() {
         authenticationService = mock(AuthenticationService.class);
+        passwordEncoder = new BCryptPasswordEncoder();
 
         accountService = new ProfileAccountService(
-                authenticationService
+                authenticationService,
+                passwordEncoder
         );
     }
 
@@ -76,8 +81,8 @@ class ProfileAccountServiceTest {
                 "NewPass456"
         );
 
-        assertThat(trainee.getUser().getPassword())
-                .isEqualTo("NewPass456");
+        assertThat(passwordEncoder.matches("NewPass456", trainee.getUser().getPassword()))
+                .isTrue();
     }
 
     @Test
@@ -96,8 +101,8 @@ class ProfileAccountServiceTest {
                 "NewPass456"
         );
 
-        assertThat(trainer.getUser().getPassword())
-                .isEqualTo("NewPass456");
+        assertThat(passwordEncoder.matches("NewPass456", trainer.getUser().getPassword()))
+                .isTrue();
     }
 
     @Test

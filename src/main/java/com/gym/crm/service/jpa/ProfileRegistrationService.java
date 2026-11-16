@@ -14,6 +14,7 @@ import com.gym.crm.util.PasswordGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class ProfileRegistrationService {
     private final UsernameGenerator usernameGenerator;
     private final PasswordGenerator passwordGenerator;
     private final GymMetricsService metricsService;
+    private final PasswordEncoder passwordEncoder;
 
     public ProfileRegistrationService(
             TraineeDao traineeDao,
@@ -38,7 +40,8 @@ public class ProfileRegistrationService {
             TrainingTypeDao trainingTypeDao,
             @Qualifier("jpaUsernameGenerator") UsernameGenerator usernameGenerator,
             PasswordGenerator passwordGenerator,
-            GymMetricsService metricsService
+            GymMetricsService metricsService,
+            PasswordEncoder passwordEncoder
     ) {
         this.traineeDao = traineeDao;
         this.trainerDao = trainerDao;
@@ -46,6 +49,7 @@ public class ProfileRegistrationService {
         this.usernameGenerator = usernameGenerator;
         this.passwordGenerator = passwordGenerator;
         this.metricsService = metricsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -119,11 +123,14 @@ public class ProfileRegistrationService {
                 lastName
         );
 
+        String rawPassword = passwordGenerator.generatePassword();
+
         User user = new User();
         user.setFirstName(firstName.trim());
         user.setLastName(lastName.trim());
         user.setUsername(username);
-        user.setPassword(passwordGenerator.generatePassword());
+        user.setPlainPassword(rawPassword);
+        user.setPassword(passwordEncoder.encode(rawPassword));
         user.setActive(true);
 
         return user;

@@ -42,7 +42,7 @@ class ProfileManagementServiceTest {
         );
 
         String username = trainee.getUser().getUsername();
-        String password = trainee.getUser().getPassword();
+        String password = trainee.getUser().getPlainPassword();
 
         Trainee updated = profileManagementService.updateTrainee(
                 username,
@@ -74,7 +74,7 @@ class ProfileManagementServiceTest {
         );
 
         String username = trainer.getUser().getUsername();
-        String password = trainer.getUser().getPassword();
+        String password = trainer.getUser().getPlainPassword();
 
         Trainer updated = profileManagementService.updateTrainer(
                 username,
@@ -102,7 +102,7 @@ class ProfileManagementServiceTest {
         );
 
         String username = trainee.getUser().getUsername();
-        String password = trainee.getUser().getPassword();
+        String password = trainee.getUser().getPlainPassword();
 
         profileManagementService.deactivateTrainee(username, password);
 
@@ -130,7 +130,7 @@ class ProfileManagementServiceTest {
         );
 
         String username = trainer.getUser().getUsername();
-        String password = trainer.getUser().getPassword();
+        String password = trainer.getUser().getPlainPassword();
 
         assertThatThrownBy(() -> profileManagementService.updateTrainer(
                 username,

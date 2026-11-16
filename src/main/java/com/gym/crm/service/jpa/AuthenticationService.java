@@ -6,6 +6,7 @@ import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
 import com.gym.crm.entity.User;
 import com.gym.crm.service.exception.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,16 @@ public class AuthenticationService {
 
     private final TraineeDao traineeDao;
     private final TrainerDao trainerDao;
+    private PasswordEncoder passwordEncoder;
 
     public AuthenticationService(
             TraineeDao traineeDao,
-            TrainerDao trainerDao
+            TrainerDao trainerDao,
+            PasswordEncoder passwordEncoder
     ) {
         this.traineeDao = traineeDao;
         this.trainerDao = trainerDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Trainee authenticateTrainee(
@@ -63,7 +67,7 @@ public class AuthenticationService {
     }
 
     private void verifyPassword(User user, String password) {
-        if (!password.equals(user.getPassword())) {
+        if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new AuthenticationException();
         }
     }
