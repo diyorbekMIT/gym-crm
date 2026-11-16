@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @Import({
         PersistenceConfig.class,
+        PasswordConfig.class,
 
         JpaUserDao.class,
         JpaTrainingTypeDao.class,
@@ -59,11 +60,5 @@ public class HibernateAppConfig {
     @ConditionalOnMissingBean
     public MeterRegistry meterRegistry() {
         return new SimpleMeterRegistry();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

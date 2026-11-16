@@ -1,6 +1,8 @@
 spring:
   application:
     name: gym-crm
+  main:
+    allow-bean-definition-overriding: true
 
   jpa:
     open-in-view: false

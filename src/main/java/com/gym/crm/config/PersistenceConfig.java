@@ -22,9 +22,12 @@ import org.springframework.orm.jpa.SharedEntityManagerCreator;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+import org.springframework.context.annotation.Import;
+
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:database.properties")
+@Import(PasswordConfig.class)
 public class PersistenceConfig {
 
     private final Environment environment;
@@ -138,12 +141,6 @@ public class PersistenceConfig {
     databasePropertySourcesPlaceholderConfigurer() {
 
         return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    @org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
-        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
     }
 
     
