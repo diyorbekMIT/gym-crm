@@ -13,6 +13,9 @@ import com.gym.crm.metrics.GymMetricsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -32,6 +35,7 @@ class ProfileRegistrationServiceTest {
     private UsernameGenerator usernameGenerator;
     private PasswordGenerator passwordGenerator;
     private GymMetricsService metricsService;
+    private PasswordEncoder passwordEncoder;
 
     private ProfileRegistrationService registrationService;
 
@@ -43,6 +47,7 @@ class ProfileRegistrationServiceTest {
         usernameGenerator = mock(UsernameGenerator.class);
         passwordGenerator = mock(PasswordGenerator.class);
         metricsService = mock(GymMetricsService.class);
+        passwordEncoder = new BCryptPasswordEncoder();
 
         registrationService = new ProfileRegistrationService(
                 traineeDao,
@@ -50,7 +55,8 @@ class ProfileRegistrationServiceTest {
                 trainingTypeDao,
                 usernameGenerator,
                 passwordGenerator,
-                metricsService
+                metricsService,
+                passwordEncoder
         );
     }
 
@@ -75,7 +81,10 @@ class ProfileRegistrationServiceTest {
         assertThat(trainee.getUser().getUsername())
                 .isEqualTo("John.Smith");
 
-        assertThat(trainee.getUser().getPassword())
+        assertThat(passwordEncoder.matches("FakePass12", trainee.getUser().getPassword()))
+                .isTrue();
+
+        assertThat(trainee.getUser().getPlainPassword())
                 .isEqualTo("FakePass12");
 
         assertThat(trainee.getUser().getActive()).isTrue();
@@ -116,7 +125,10 @@ class ProfileRegistrationServiceTest {
         assertThat(trainer.getUser().getUsername())
                 .isEqualTo("Sarah.Davis");
 
-        assertThat(trainer.getUser().getPassword())
+        assertThat(passwordEncoder.matches("FakePass12", trainer.getUser().getPassword()))
+                .isTrue();
+
+        assertThat(trainer.getUser().getPlainPassword())
                 .isEqualTo("FakePass12");
 
         assertThat(trainer.getUser().getActive()).isTrue();

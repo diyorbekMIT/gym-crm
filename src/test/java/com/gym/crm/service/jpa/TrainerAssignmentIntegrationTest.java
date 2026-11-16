@@ -35,6 +35,9 @@ class TrainerAssignmentIntegrationTest {
     @Autowired
     private TrainerAssignmentService assignmentService;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -227,7 +230,7 @@ class TrainerAssignmentIntegrationTest {
         user.setUsername(
                 firstName + "." + lastName + "." + UUID.randomUUID()
         );
-        user.setPassword(PASSWORD);
+        user.setPassword(passwordEncoder.encode(PASSWORD));
         user.setActive(true);
 
         return user;

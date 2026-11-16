@@ -73,7 +73,7 @@ public class TrainerController {
 
         RegistrationResponse response = new RegistrationResponse(
                 trainer.getUser().getUsername(),
-                trainer.getUser().getPassword()
+                trainer.getUser().getPlainPassword()
         );
 
         return ResponseEntity

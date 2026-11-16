@@ -37,6 +37,9 @@ class TraineeDeletionIntegrationTest {
     @Autowired
     private TraineeDeletionService deletionService;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -189,7 +192,7 @@ class TraineeDeletionIntegrationTest {
         user.setUsername(
                 firstName + ".Test." + UUID.randomUUID()
         );
-        user.setPassword(PASSWORD);
+        user.setPassword(passwordEncoder.encode(PASSWORD));
         user.setActive(true);
 
         return user;

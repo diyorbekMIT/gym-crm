@@ -1,7 +1,10 @@
 package com.gym.crm.dao.jpa;
 
+import com.gym.crm.entity.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class JpaUserDao implements UserDao {
@@ -26,5 +29,21 @@ public class JpaUserDao implements UserDao {
                 .getSingleResult();
 
         return count > 0;
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return entityManager.createQuery(
+                        """
+                        SELECT u
+                        FROM User u
+                        WHERE u.username = :username
+                        """,
+                        User.class
+                )
+                .setParameter("username", username)
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 }

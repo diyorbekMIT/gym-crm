@@ -55,7 +55,8 @@ class ProfileRegistrationIntegrationTest {
                 .isEqualTo("John." + lastName);
 
         assertThat(loadedTrainee.getUser().getPassword())
-                .isEqualTo(password)
+                .isEqualTo(password);
+        assertThat(trainee.getUser().getPlainPassword())
                 .matches("[A-Za-z0-9]{10}");
 
         assertThat(loadedTrainee.getUser().getActive()).isTrue();
@@ -78,6 +79,7 @@ class ProfileRegistrationIntegrationTest {
         entityManager.flush();
 
         Long trainerId = trainer.getId();
+        String password = trainer.getUser().getPassword();
 
         entityManager.clear();
 
@@ -87,6 +89,8 @@ class ProfileRegistrationIntegrationTest {
         assertThat(trainerId).isNotNull();
 
         assertThat(loadedTrainer.getUser().getPassword())
+                .isEqualTo(password);
+        assertThat(trainer.getUser().getPlainPassword())
                 .matches("[A-Za-z0-9]{10}");
 
         assertThat(loadedTrainer.getUser().getActive()).isTrue();
