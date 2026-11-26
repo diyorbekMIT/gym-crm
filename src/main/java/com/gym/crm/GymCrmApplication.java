@@ -3,10 +3,12 @@ package com.gym.crm;
 import com.gym.crm.config.HibernateAppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(HibernateAppConfig.class)
+@EnableDiscoveryClient
 public class GymCrmApplication {
 
     public static void main(String[] args) {

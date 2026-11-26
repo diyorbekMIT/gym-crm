@@ -16,3 +16,18 @@ logging:
     root: INFO
     com.gym.crm: INFO
     org.hibernate.SQL: INFO
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://discovery-service:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+workload:
+  service:
+    url: ${WORKLOAD_SERVICE_URL:http://trainer-workload-service}

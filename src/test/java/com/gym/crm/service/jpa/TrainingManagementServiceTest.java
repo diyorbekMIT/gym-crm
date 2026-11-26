@@ -1,5 +1,6 @@
 package com.gym.crm.service.jpa;
 
+import com.gym.crm.client.TrainerWorkloadClient;
 import com.gym.crm.dao.jpa.TrainerDao;
 import com.gym.crm.dao.jpa.TrainingDao;
 import com.gym.crm.dao.jpa.TrainingTypeDao;
@@ -34,6 +35,7 @@ class TrainingManagementServiceTest {
     private TrainingTypeDao trainingTypeDao;
     private TrainingDao trainingDao;
     private GymMetricsService gymMetricsService;
+    private TrainerWorkloadClient trainerWorkloadClient;
 
     private TrainingManagementService trainingService;
 
@@ -44,13 +46,15 @@ class TrainingManagementServiceTest {
         trainingTypeDao = mock(TrainingTypeDao.class);
         trainingDao = mock(TrainingDao.class);
         gymMetricsService = mock(GymMetricsService.class);
+        trainerWorkloadClient = mock(TrainerWorkloadClient.class);
 
         trainingService = new TrainingManagementService(
                 authenticationService,
                 trainerDao,
                 trainingTypeDao,
                 trainingDao,
-                gymMetricsService
+                gymMetricsService,
+                trainerWorkloadClient
         );
     }
 

@@ -1,8 +1,10 @@
 package com.gym.crm.service.jpa;
 
+import com.gym.crm.client.TrainerWorkloadClient;
 import com.gym.crm.dao.jpa.TrainerDao;
 import com.gym.crm.dao.jpa.TrainingDao;
 import com.gym.crm.dao.jpa.TrainingTypeDao;
+import com.gym.crm.dto.request.TrainerWorkloadRequest;
 import com.gym.crm.entity.Trainee;
 import com.gym.crm.entity.Trainer;
 import com.gym.crm.entity.Training;
@@ -27,19 +29,23 @@ public class TrainingManagementService {
     private final TrainingTypeDao trainingTypeDao;
     private final TrainingDao trainingDao;
     private final GymMetricsService gymMetricsService;
+    private final TrainerWorkloadClient trainerWorkloadClient;
 
     public TrainingManagementService(
             AuthenticationService authenticationService,
             TrainerDao trainerDao,
             TrainingTypeDao trainingTypeDao,
-            TrainingDao trainingDao, GymMetricsService gymMetricsService
+            TrainingDao trainingDao, GymMetricsService gymMetricsService,
+            TrainerWorkloadClient trainerWorkloadClient
     ) {
         this.authenticationService = authenticationService;
         this.trainerDao = trainerDao;
         this.trainingTypeDao = trainingTypeDao;
         this.trainingDao = trainingDao;
         this.gymMetricsService = gymMetricsService;
+        this.trainerWorkloadClient = trainerWorkloadClient;
     }
+
 
     @Transactional
     public Training addTraining(
@@ -86,6 +92,10 @@ public class TrainingManagementService {
         training.setTrainingDuration(durationMinutes);
 
         Training savedTraining = trainingDao.save(training);
+        trainerWorkloadClient.notifyWorkload(
+                savedTraining,
+                TrainerWorkloadRequest.ActionType.ADD
+        );
         gymMetricsService.incrementTrainingCreations();
 
         LOGGER.info(

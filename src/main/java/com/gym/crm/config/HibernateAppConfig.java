@@ -1,5 +1,6 @@
 package com.gym.crm.config;
 
+import com.gym.crm.client.TrainerWorkloadClient;
 import com.gym.crm.dao.jpa.JpaTraineeDao;
 import com.gym.crm.dao.jpa.JpaTrainerDao;
 import com.gym.crm.dao.jpa.JpaTrainingDao;
@@ -31,6 +32,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Import({
         PersistenceConfig.class,
         PasswordConfig.class,
+        RestClientConfig.class,
+        TrainerWorkloadClient.class,
 
         JpaUserDao.class,
         JpaTrainingTypeDao.class,

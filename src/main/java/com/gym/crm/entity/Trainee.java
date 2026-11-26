@@ -97,6 +97,10 @@ public class Trainee {
         return Collections.unmodifiableSet(trainers);
     }
 
+    public List<Training> getTrainings() {
+        return Collections.unmodifiableList(trainings);
+    }
+
     public void addTrainer(Trainer trainer) {
         if (trainer == null) {
             throw new IllegalArgumentException("Trainer must not be null.");

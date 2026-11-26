@@ -12,7 +12,9 @@ import com.gym.crm.service.exception.AuthenticationException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
+import com.gym.crm.client.TrainerWorkloadClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,9 @@ class TraineeDeletionIntegrationTest {
 
     @Autowired
     private TraineeDeletionService deletionService;
+
+    @MockitoBean
+    private TrainerWorkloadClient trainerWorkloadClient;
 
     @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;

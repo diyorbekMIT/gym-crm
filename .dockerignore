@@ -11,3 +11,5 @@ README.md
 logs/
 .env
 .env.*
+discovery-service/
+trainer-workload-service/
