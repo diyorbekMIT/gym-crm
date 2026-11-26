@@ -1,213 +1,156 @@
-# Gym CRM — Spring MVC, Hibernate/JPA, REST API
+# Gym CRM — Spring Boot Microservices & Security
 
-A Gym CRM application implementing trainee, trainer, training, authentication,
-profile management, trainer assignment, and training-management functionality.
+A Gym CRM microservices system implementing trainee/trainer profile management, training scheduling, Spring Security (BCrypt + JWT + Brute Force protection + CORS), Eureka Service Discovery, Resilience4j Circuit Breaker, two-level distributed transaction logging, and full Docker Compose containerization.
 
-The application uses a layered Spring MVC architecture with Hibernate/JPA
-persistence and a PostgreSQL database.
+## Services Overview
+
+| Service | Directory | Port | Role |
+|---|---|---|---|
+| **Gym CRM (`gym-crm`)** | `.` (root) | `8080` | Main microservice (REST API, PostgreSQL/JPA, JWT auth, Circuit Breaker client) |
+| **Trainer Workload (`trainer-workload-service`)** | `./trainer-workload-service` | `8081` | Secondary microservice (in-memory DB of trainer monthly working hours, JWT validation) |
+| **Discovery Server (`discovery-service`)** | `./discovery-service` | `8761` | Netflix Eureka Server for service registration & discovery |
+| **PostgreSQL (`postgres`)** | Docker image `postgres:16-alpine` | `5432` | Relational database for `gym-crm` |
 
 ## Technologies
 
 - Java 21
-- Spring Framework 6
-- Spring MVC
-- Hibernate 6 / JPA
-- PostgreSQL
-- Embedded Tomcat
-- Jackson
-- Hibernate Validator
-- JUnit 5
-- Mockito
-- AssertJ
-- JaCoCo
-- Maven
+- Spring Boot 3.5.6 & Spring Cloud 2025.0.0
+- Spring Security (BCrypt hashing, JWT Bearer tokens, brute-force protection, CORS)
+- Spring Cloud Netflix Eureka (Server & Client) & LoadBalancer
+- Spring Cloud Circuit Breaker (Resilience4j)
+- Hibernate 6 / JPA & PostgreSQL
+- Spring Boot Actuator & Micrometer / Prometheus
+- Springdoc OpenAPI (Swagger UI)
+- Docker & Docker Compose
+- JUnit 5, Mockito, AssertJ
 
 ## Architecture
 
 ```text
-RestController
-  → DTO validation / mapping
-    → JpaGymFacade / service layer
-      → JPA DAO / Hibernate
-        → PostgreSQL
+Client
+  │
+  ▼ (JWT Bearer Token)
+gym-crm (:8080) ──► PostgreSQL (:5432)
+  │
+  ├──► discovery-service / Eureka (:8761)  [service lookup]
+  │
+  ▼ (@LoadBalanced RestClient + Resilience4j Circuit Breaker + JWT + X-Transaction-Id)
+trainer-workload-service (:8081)  [in-memory monthly summary]
 ```
 
-### Packages
+## Authentication & Security (Spring Security + JWT)
 
-- `controller` — REST endpoints and HTTP request handling
-- `dto` — request and response contracts
-- `mapper` — entity-to-DTO conversion
-- `service.jpa` — transactional business services
-- `dao.jpa` — JPA data-access components
-- `entity` — JPA domain entities
-- `exception` — application and API error handling
-- `logging` — transaction and REST request logging
-- `config` — Spring, persistence, and web configuration
+- Passwords are salted and hashed with **BCrypt** in the database (`plainPassword` is returned once during registration).
+- **Brute-force protection:** 3 consecutive failed login attempts block the user for **5 minutes** (`403 Forbidden`).
+- **Logout** blacklists the JWT token so subsequent requests with that token are rejected.
+- **Inter-service security:** `gym-crm` sends a signed JWT Bearer token to `trainer-workload-service`, which validates it statelessly using the shared secret.
 
-## REST API
-
-Base URL:
-
-```text
-http://localhost:8080/api/v1
-```
-
-### Public endpoints
+### Public Endpoints (`gym-crm`)
 
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | `/trainees/register` | Register trainee |
-| POST | `/trainers/register` | Register trainer |
-| GET | `/training-types` | Get training types |
+| POST | `/api/v1/trainees/register` | Register trainee (returns generated username & password) |
+| POST | `/api/v1/trainers/register` | Register trainer (returns generated username & password) |
+| POST | `/api/v1/auth/login` | Authenticate with username/password and receive JWT |
+| GET | `/actuator/**` | Health & metrics endpoints |
+| GET | `/swagger-ui.html` | OpenAPI / Swagger UI |
 
-### Authenticated endpoints
+### Protected Endpoints
 
-All other endpoints require:
+All other endpoints require `Authorization: Bearer <jwt-token>`:
 
-```text
-X-Auth-Username: <username>
-X-Auth-Password: <password>
-```
+| Service | Method | Endpoint | Description |
+|---|---|---|---|
+| `gym-crm` | POST | `/api/v1/auth/logout` | Invalidate current JWT token |
+| `gym-crm` | PUT | `/api/v1/auth/password` | Change password |
+| `gym-crm` | GET/PUT/DELETE | `/api/v1/trainees/{username}` | Get, update, or hard-delete trainee (cascade-deletes trainings & notifies workload service) |
+| `gym-crm` | PATCH | `/api/v1/trainees/{username}/status` | Activate/deactivate trainee |
+| `gym-crm` | GET/PUT | `/api/v1/trainees/{username}/trainers` | Get unassigned trainers / update assignments |
+| `gym-crm` | GET | `/api/v1/trainees/{username}/trainings` | Get trainee trainings |
+| `gym-crm` | GET/PUT | `/api/v1/trainers/{username}` | Get or update trainer profile |
+| `gym-crm` | PATCH | `/api/v1/trainers/{username}/status` | Activate/deactivate trainer |
+| `gym-crm` | GET | `/api/v1/trainers/{username}/trainings` | Get trainer trainings |
+| `gym-crm` | POST | `/api/v1/trainings` | Add training (notifies workload service `ADD`) |
+| `trainer-workload-service` | POST | `/api/v1/trainer-workload` | Accept workload event (`ADD` / `DELETE`) |
+| `trainer-workload-service` | GET | `/api/v1/trainer-workload/{username}` | Get trainer monthly training duration summary |
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/auth/login` | Login |
-| PUT | `/auth/password` | Change password |
-| GET | `/trainees/{username}` | Get trainee profile |
-| PUT | `/trainees/{username}` | Update trainee profile |
-| DELETE | `/trainees/{username}` | Delete trainee |
-| PATCH | `/trainees/{username}/status` | Activate/deactivate trainee |
-| GET | `/trainees/{username}/trainers` | Get unassigned active trainers |
-| PUT | `/trainees/{username}/trainers` | Replace assigned trainers |
-| GET | `/trainees/{username}/trainings` | Get trainee trainings |
-| GET | `/trainers/{username}` | Get trainer profile |
-| PUT | `/trainers/{username}` | Update trainer profile |
-| PATCH | `/trainers/{username}/status` | Activate/deactivate trainer |
-| GET | `/trainers/{username}/trainings` | Get trainer trainings |
-| POST | `/trainings` | Add training |
+## Logging & Transaction Correlation
 
-## Business rules
+Two logging levels are implemented across services:
+1. **Transaction level** (`RestLoggingFilter` / `TransactionLoggingFilter`): generates (or reads from `X-Transaction-Id`) a `transactionId`, logs HTTP method, URI, status, and duration.
+2. **Operation level** (service layer): logs business operations tagged with the same `transactionId` via SLF4J `MDC`.
 
-- Usernames are generated from first and last name.
-- Duplicate names receive a numeric suffix.
-- Passwords are randomly generated.
-- Username cannot be changed.
-- All operations except registration require authentication.
-- Trainee deletion is a hard delete and removes related trainings.
-- Training types are fixed reference data.
-- Training creation, update, and deletion are not exposed except training creation.
-- Activation/deactivation is not idempotent.
+## Build & Run Locally (Maven)
 
-## Error handling
-
-All errors return a consistent JSON structure:
-
-```json
-{
-  "timestamp": "2026-10-29T10:00:00Z",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Request validation failed.",
-  "details": {
-    "firstName": "First name must not be blank."
-  }
-}
-```
-
-## Logging
-
-Each HTTP request receives a generated `transactionId`.
-
-The application logs:
-
-- Request method and URI.
-- Response status and duration.
-- Transaction ID for correlation.
-- Errors without exposing passwords.
-
-## Build and test
-
+Run tests in `gym-crm`:
 ```bash
-mvn clean verify
+mvn test
 ```
 
-## Run
-
+Start all 3 services in separate terminals (requires local PostgreSQL on `5432`):
 ```bash
-mvn clean compile exec:java
-```
+# 1. Eureka Discovery Server
+cd discovery-service && mvn spring-boot:run
 
-The application starts on:
+# 2. Trainer Workload Service
+cd trainer-workload-service && mvn spring-boot:run
 
-```text
-http://localhost:8080
+# 3. Main Gym CRM Service
+mvn spring-boot:run
 ```
 
 ## Docker & Containerization
 
-### 1. Build the Docker Image
-To build the application image using the multi-stage `Dockerfile`:
+All 4 containers (`postgres`, `discovery-service`, `trainer-workload-service`, `app`) are configured in `docker-compose.yml` with health checks, non-root runtime users, and Docker Compose service-name networking.
 
+### 1. Build & Start Everything
 ```bash
-docker build -t gym-crm:1.0 .
+docker compose up -d --build
 ```
 
-### 2. Run with Docker Compose
-The stack runs the Gym CRM application and a dedicated PostgreSQL database in isolated containers connected through a bridge network. Credentials and configuration are passed at runtime via environment variables.
-
+### 2. Verify Container Health & Eureka Registration
 ```bash
-# Start PostgreSQL and Gym CRM in detached mode
-docker compose up -d
-
-# Check container status (both should report healthy/running)
+# Check container status (all 4 should show healthy)
 docker compose ps
+
+# Check Actuator health endpoints
+curl -s http://localhost:8761/actuator/health
+curl -s http://localhost:8081/actuator/health
+curl -s http://localhost:8080/actuator/health
 ```
+Open the Eureka Dashboard at `http://localhost:8761` — both `GYM-CRM` and `TRAINER-WORKLOAD-SERVICE` appear as `UP`.
 
-### 3. Verify Health & Actuator
-Check the application status using the Spring Boot Actuator endpoint:
-
+### 3. Inspect Logs
 ```bash
-curl -i http://localhost:8080/actuator/health
+docker compose logs -f app
+docker compose logs -f trainer-workload-service
+docker compose logs -f discovery-service
 ```
 
-Expected response (`HTTP 200 OK`):
-```json
-{
-  "status": "UP",
-  "components": {
-    "db": { "status": "UP" },
-    "trainingType": { "status": "UP" }
-  }
-}
-```
-
-### 4. Inspect Logs & Shell Diagnostics
+### 4. Demonstrate Resilience (Circuit Breaker & Eureka Recovery)
 ```bash
-# View application logs written to standard output
-docker logs -f gym-crm-app
+# 1. Stop trainer-workload-service while gym-crm stays up
+docker compose stop trainer-workload-service
 
-# Start a diagnostic shell inside the container (runs as non-root user 'gym')
-docker exec -it gym-crm-app sh
+# Adding a training on :8080 triggers RestClient timeout + Resilience4j fallback cleanly
+docker compose logs --tail 20 app
+
+# 2. Restart trainer-workload-service and verify automatic re-registration
+docker compose start trainer-workload-service
+
+# 3. Restart Eureka and verify both services recover and re-register
+docker compose restart discovery-service
 ```
 
-### 5. Stop and Restart Demonstration
+### 5. Stop Stack
 ```bash
-# Stop only the application container
-docker compose stop app
-
-# Restart the application container and verify reconnection to database
-docker compose start app
-
-# Check startup logs
-docker logs --tail 30 gym-crm-app
-
-# Stop and remove all containers and networks
 docker compose down
 ```
 
-## Example: register trainee
+## Quick API Demo (`curl`)
 
 ```bash
+# 1. Register a trainee
 curl -X POST http://localhost:8080/api/v1/trainees/register \
   -H "Content-Type: application/json" \
   -d '{
@@ -216,12 +159,14 @@ curl -X POST http://localhost:8080/api/v1/trainees/register \
     "dateOfBirth": "1995-05-10",
     "address": "123 Main Street"
   }'
-```
 
-## Example: get trainee profile
+# 2. Login to get JWT Bearer token
+TOKEN=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"John.Smith","password":"<generated-password>"}' \
+  | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
 
-```bash
-curl http://localhost:8080/api/v1/trainees/john.smith \
-  -H "X-Auth-Username: john.smith" \
-  -H "X-Auth-Password: generated-password"
+# 3. Query trainer workload summary (using JWT)
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8081/api/v1/trainer-workload/<trainerUsername>
 ```
